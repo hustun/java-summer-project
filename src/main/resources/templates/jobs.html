@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Jobs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/jobs.css}"/>
+
+    <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
+</head>
+<body>
+    <h1 class="page-title pt-5 pb-1 ">Latest Jobs</h1>
+    <a th:href="@{/jobs/newJobForm}" class="btn btn-info btn-sm mb-3">
+        Add Job
+    </a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3 job-container" th:each="job : ${jobs}">
+                <h2 ><a th:href="@{'jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
+                <div class="left-side">
+                    <p th:text="${job.description}"></p>
+                    <p th:text="'Status: ' + ${job.status}"></p>
+                    <p th:text="'Company: ' + ${job.companyName}"></p>
+                    <a th:href="@{/jobs/updateJob(jobId=${job.id})}" class="btn btn-info btn-sm">Update</a>
+                </div>
+                <div class="right-side">
+                    <i class="fas fa-map-marker"></i>
+                    <p th:text="${job.location}"></p>
+                    <button type="button" class="btn btn-info application-button">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-dark">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class=""th:each="job : ${jobs}">
+                <td th:text="${job.id}">0</td>
+                <td th:text="${job.title}">1/1/1111</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

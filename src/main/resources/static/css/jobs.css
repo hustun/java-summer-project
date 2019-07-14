@@ -1,0 +1,52 @@
+body {
+    background-color: #f5f5f5;
+    color: #2f2f2f;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.page-title {
+    text-align: center;
+}
+
+.job-container {
+    padding: 2%;
+    transition: box-shadow 0.5s, background-color 0.2s;
+    border-radius: 25px;
+}
+
+.job-container:hover {
+    background-color: #2f2f2f;
+    color: #f5f5f5;
+    box-shadow: 2px 2px 20px 3px rgba(171,171,171,0.75);
+}
+
+.left-side {
+    float: left;
+}
+
+.right-side {
+    float: right;
+    text-align: center;
+}
+
+.application-button {
+    box-shadow: 2px 2px 20px 3px rgba(171,171,171,0.75);
+}
+/*
+.application-button {
+    color: #cfcfcf;
+    background-color: #2f2f2f;
+
+}*/
+.job-container:hover .application-button {
+    box-shadow: initial;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+    <link rel="stylesheet" th:href="@{/test.css}"/>
+</head>
+<body>
+    <h1>This is a test page.</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et urna enim. Aliquam gravida enim
+        sed eleifend vulputate. Nullam ut odio sit amet erat semper pulvinar. In euismod molestie nibh, non ultrices
+        neque sollicitudin quis. Etiam ut enim a risus porttitor finibus vel sit amet ex. Aenean vitae bibendum velit.
+        Vestibulum molestie erat eu semper pharetra.
+    </p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="app : ${applications}">
+            <td th:text="${app.id}">0</td>
+            <td th:text="${app.date}">1/1/1111</td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

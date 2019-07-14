@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/job-display.css}"/>
+
+    <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
+</head>
+<!--/*@thymesVar id="job" type="com.example.summerprojecttest.model.Job"*/-->
+<body>
+
+    <div class="fluid-controller">
+        <div class="row">
+            <div class="left-div col-md-8 pl-4">
+                <div class="job-header">
+                    <div class="mt-4 h2 text-center" th:text="${job.title}"></div>
+                    <div class="row pt-4 pl-4">
+                        <div class="company-div col-md-4">
+                            <i class="far fa-building d-inline"></i>
+                            <p class="d-inline header-text ml-2" th:text="${job.companyName}"></p>
+                        </div>
+                        <div class="location-div col-md-4">
+                            <i class="far fa-calendar-alt d-inline"></i>
+                            <p class="d-inline header-text ml-2" th:text="'Post Time: ' + ${job.activationTime}"></p>
+                        </div>
+                        <div class="location-div col-md-4">
+                            <i class="fas fa-map-marker d-inline"></i>
+                            <p class="test d-inline header-text ml-2" th:text="${job.location}"></p>
+                        </div>
+                    </div>
+                    <div class="m-4" th:text="${job.description}">
+
+                    </div>
+                    <div class="m-4">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque pretium dictum luctus. Donec lacinia quam condimentum dolor rhoncus, vel accumsan lacus lobortis. Quisque a nisl ac quam aliquet posuere. Pellentesque blandit, diam id pharetra iaculis, sem tortor aliquam urna, in bibendum dolor nulla vel leo. Aliquam euismod lorem ligula, et dictum ipsum ullamcorper at. Nullam dui sem, pharetra sit amet ex in, aliquam dignissim ipsum. Nam non consectetur neque. Donec sit amet justo leo. Phasellus varius ornare magna sodales dictum. Sed sodales magna eget euismod porttitor. Integer et est nisl. Pellentesque maximus ante purus, in lacinia dolor tempus sed. Phasellus et tortor leo.
+
+                        Ut tristique massa id diam facilisis, lacinia molestie felis porta. Nullam euismod eros felis, in elementum nunc sagittis vitae. Aenean mollis, turpis nec rhoncus ullamcorper, lectus arcu ullamcorper tellus, sit amet rhoncus nisi nulla quis risus. Praesent efficitur consequat hendrerit. In hendrerit, ligula ac pellentesque finibus, elit sem iaculis erat, eu finibus erat nulla interdum urna. Donec consectetur risus a luctus elementum. In volutpat nunc at bibendum vehicula. Aliquam tristique ante vitae finibus rutrum. Aenean ultricies, elit a dapibus cursus, elit nisl finibus libero, eget fringilla enim velit sed magna. Duis iaculis velit in accumsan pharetra. Aenean sed sodales justo.
+
+                        Cras congue sed ligula in accumsan. Pellentesque nec laoreet turpis. Sed eu gravida odio, ac aliquet dolor. Cras ullamcorper convallis ipsum, eu tempus velit suscipit sit amet. Ut sit amet nibh quis massa luctus sagittis. Fusce sit amet mi dictum, mollis eros nec, dapibus orci. Nunc ac metus augue. Sed posuere non massa sit amet euismod. Aliquam ac ex eros. Phasellus in ornare nulla, sed laoreet sem. Aenean feugiat tellus in vehicula congue.
+                    </div>
+                </div>
+
+            </div>
+            <div class="right-div col-md-4">
+                Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus cursus mauris a massa sodales, at efficitur arcu laoreet. Integer quis sapien ornare, malesuada lorem vel, venenatis risus. Proin sed semper turpis. In hac habitasse platea dictumst. Suspendisse vel lorem non ex cursus pharetra ut feugiat felis. Proin pellentesque fermentum augue et porttitor. In laoreet risus ac magna porta, et lacinia enim convallis. Maecenas bibendum, odio in finibus faucibus, nisl justo elementum sapien, et pharetra ligula mauris convallis tellus. Integer laoreet eu dui quis pharetra. Fusce maximus mauris in augue rhoncus, ut varius felis lacinia. Fusce nec euismod mi, in congue dolor. Proin hendrerit diam quis felis commodo, vel vestibulum felis pharetra.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
