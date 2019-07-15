@@ -24,8 +24,8 @@ a:hover {
 }
 
 .job-container:hover {
-    background-color: #2f2f2f;
-    color: #f5f5f5;
+    //background-color: #2f2f2f;
+    //color: #f5f5f5;
     box-shadow: 2px 2px 20px 3px rgba(171,171,171,0.75);
 }
 
