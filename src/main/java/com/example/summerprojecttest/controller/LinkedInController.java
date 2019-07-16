@@ -1,5 +1,8 @@
 package com.example.summerprojecttest.controller;
 
+import com.example.summerprojecttest.model.Candidate;
+import com.example.summerprojecttest.services.CandidateServiceImpl;
+import com.unboundid.util.json.JSONArray;
 import com.unboundid.util.json.JSONException;
 import com.unboundid.util.json.JSONObject;
 import org.springframework.boot.json.JsonParser;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
@@ -32,7 +36,17 @@ import java.util.regex.Pattern;
 @Controller
 public class LinkedInController {
 
-   /* @GetMapping("/")
+    private final String clientId="78mhye2e5ha1od";
+    private final String clientSecret="GrmCYYWLuC4HOjEO";
+    private final String redirectUrl="http://localhost:8080/linkedin";
+
+    private CandidateServiceImpl candidateService;
+
+    public LinkedInController(CandidateServiceImpl candidateService) {
+        this.candidateService = candidateService;
+    }
+
+    /* @GetMapping("/")
     public String index() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
@@ -45,9 +59,6 @@ public class LinkedInController {
     //get client id and client Secret by creating a app in
     //https://www.linkedin.com developers
     //and set your redirect url
-    private String clientId="78mhye2e5ha1od";
-    private String clientSecret="GrmCYYWLuC4HOjEO";
-    private String redirectUrl="http://localhost:8080/linkedin";
 
     //create button on your page and hit this get request
     @GetMapping("/authorization")
@@ -62,13 +73,14 @@ public class LinkedInController {
     @GetMapping("/linkedin")
 
     //now store your authorization code
-    public String home(@RequestParam("code") String authorizationCode, Model model) throws JSONException {
+    public RedirectView home(@RequestParam("code") String authorizationCode, Model model) throws JSONException {
+        RedirectView redirectView = new RedirectView();
 
         //to trade your authorization code for access token
         String accessTokenUri ="https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code="+authorizationCode+"&redirect_uri="+redirectUrl+"&client_id="+clientId+"&client_secret="+clientSecret+"";
         // linkedin api to get linkedidn profile detail
         String linedkinDetailUri = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
-
+        String linedkinProfileUri = "https://api.linkedin.com/v2/me";
         //store your access token
         RestTemplate restTemplate = new RestTemplate();
         String accessTokenRequest = restTemplate.getForObject(accessTokenUri, String.class);
@@ -83,33 +95,35 @@ public class LinkedInController {
         headers.add("Authorization", "Bearer " +accessToken.substring(1,accessToken.length()-1));
         HttpEntity<String> entity = new HttpEntity<String>("", headers);
         ResponseEntity<String> linkedinDetailRequest = restTemplate.exchange(linedkinDetailUri, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> linkedinProfileRequest = restTemplate.exchange(linedkinProfileUri, HttpMethod.GET, entity, String.class);
+
         //store json data
         JSONObject jsonObjOfLinkedinDetail = new JSONObject(linkedinDetailRequest.getBody());
+        JSONObject jsonObjOfLinkedinProfile = new JSONObject(linkedinProfileRequest.getBody());
+
         //print json data
+        System.out.println("-----------JSON-------------");
         System.out.println(jsonObjOfLinkedinDetail);
+        System.out.println(jsonObjOfLinkedinProfile);
+        System.out.println("-----------JSON-------------");
+
         System.out.println("email: " + jsonObjOfLinkedinDetail.getFieldAsString("emailAddress"));
         System.out.println("handle: " + jsonObjOfLinkedinDetail.getFieldAsString("handle~"));
         System.out.println("handle: " + jsonObjOfLinkedinDetail);
         JsonParser jsonParser = JsonParserFactory.getJsonParser();
-        Map<String, Object> map = jsonParser.parseMap(jsonObjOfLinkedinDetail.toString());
 
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + " = " + entry.getValue());
-        }
-        System.out.println(map.get("emailAddress"));
-        Pattern pattern = Pattern.compile("emailAddress\":\"[^\"]+");
-        Matcher matcher = pattern.matcher(jsonObjOfLinkedinDetail.toString());
-        boolean found = false;
-        if(matcher.find()){
-            System.out.println("I found the text "+matcher.group()+" starting at index "+
-                    matcher.start()+" and ending at index "+matcher.end());
-            found = true;
-        }
-        if(!found){
-            System.out.println("No match found.");
-        }
-        String email = jsonObjOfLinkedinDetail.toString().substring(matcher.start()+15, matcher.end());
-        System.out.println("Email: " + email);
+        //mail matcher
+        String email = getProfileInfo(jsonObjOfLinkedinDetail, "emailAddress\":\"[^\"]+", 15, "Email: ");
+        //--
+
+        //name matcher
+        String firstName = getProfileInfo(jsonObjOfLinkedinProfile, "localizedFirstName\":\"[^\"]+", 21, "First Name: ");
+        //--
+
+        //last name matcher
+        String lastName = getProfileInfo(jsonObjOfLinkedinProfile, "localizedLastName\":\"[^\"]+", 20, "Last Name: ");
+        //--
+
 
         ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession httpSession = attributes.getRequest().getSession();
@@ -120,6 +134,9 @@ public class LinkedInController {
         SecurityContextHolder.getContext().setAuthentication(auth);
         SecurityContext sc = SecurityContextHolder.getContext();
         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+        httpSession.setAttribute("firstName", firstName);
+        httpSession.setAttribute("lastName", lastName);
+
 
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
@@ -127,6 +144,34 @@ public class LinkedInController {
 
         model.addAttribute("userName", email);
 
-        return "index";
+        if( candidateService.findByEmail(email) == null ){
+            Candidate candidate = new Candidate();
+            System.out.println("No candidate found with this email.");
+            redirectView.setUrl("/candidate/newCandidateForm");
+
+            return redirectView;
+        }else{
+            System.out.println("A candidate found with this email.");
+            redirectView.setUrl("/");
+        }
+
+        return redirectView;
+    }
+
+    private String getProfileInfo(JSONObject jsonObject, String regex, int i, String s2) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(jsonObject.toString());
+        boolean found = false;
+        if (matcher.find()) {
+            System.out.println("I found the text " + matcher.group() + " starting at index " +
+                    matcher.start() + " and ending at index " + matcher.end());
+            found = true;
+        }
+        if (!found) {
+            System.out.println("No match found.");
+        }
+        String info = jsonObject.toString().substring(matcher.start() + i, matcher.end());
+        System.out.println(s2 + info);
+        return info;
     }
 }

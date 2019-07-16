@@ -1,12 +1,12 @@
 package com.example.summerprojecttest.bootstrap;
 
-import com.example.summerprojecttest.model.Application;
-import com.example.summerprojecttest.model.Candidate;
-import com.example.summerprojecttest.model.Job;
+import com.example.summerprojecttest.model.*;
 import com.example.summerprojecttest.repo.ApplicationRepository;
 import com.example.summerprojecttest.repo.CandidateRepository;
 import com.example.summerprojecttest.repo.JobRepository;
+import com.example.summerprojecttest.repo.SkillRepository;
 import com.example.summerprojecttest.services.CandidateServiceImpl;
+import com.example.summerprojecttest.services.SkillService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -15,9 +15,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -25,19 +23,37 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     private CandidateRepository candidateRepository;
     private ApplicationRepository applicationRepository;
     private JobRepository jobRepository;
+    private SkillRepository skillRepository;
 
-    public DevBootstrap(CandidateRepository candidateRepository, ApplicationRepository applicationRepository, JobRepository jobRepository) {
+    public DevBootstrap(CandidateRepository candidateRepository, ApplicationRepository applicationRepository, JobRepository jobRepository, SkillRepository skillRepository) {
         this.candidateRepository = candidateRepository;
         this.applicationRepository = applicationRepository;
         this.jobRepository = jobRepository;
+        this.skillRepository = skillRepository;
     }
 
     private void initData() {
 
+        ArrayList<Skill> skills = SkillsList.getSkillsList();
+
+
         Candidate hasan = new Candidate("Hasan", "Üstün", 22, "İstanbul", "Yeditepe");
-        Candidate aleyna = new Candidate("Aleyna", "Üstün", 20, "İstanbul", "Yeditepe");
+        Candidate aleyna = new Candidate("Aleyna", "Gürsoy", 20, "İstanbul", "Yeditepe");
         hasan.setUserName("hasbey");
         aleyna.setUserName("aleyna");
+        hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+
+        aleyna.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        aleyna.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        aleyna.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+
+        for ( Skill skill : skills ){
+            skillRepository.save(skill);
+        }
+
+        //hasan.setEmail("hasan.ustun@std.yeditepe.edu.tr");
 
         Application app1 = new Application(LocalTime.now());
         hasan.getApplications().add(app1);
@@ -59,6 +75,7 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         jobRepository.save(job);
         jobRepository.save(job2);
         jobRepository.save(job3);
+
 
         applicationRepository.save(app1);
 

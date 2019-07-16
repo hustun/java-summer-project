@@ -1,0 +1,9 @@
+ul {
+    list-style: none;
+}
+
+.largerCheckbox
+{
+    width: 20px;
+    height: 20px;
+}

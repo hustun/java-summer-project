@@ -36,8 +36,18 @@ public class Candidate {
     @NotEmpty
     private String university;
 
+    @Column(name = "email")
+    private String email;
+
     @OneToMany(mappedBy = "applicant")
     private Set<Application> applications = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "candidate_skills",
+            joinColumns = @JoinColumn(name = "candidate_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private Set<Skill> skills = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -103,6 +113,22 @@ public class Candidate {
         this.userName = userName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Set<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<Skill> skills) {
+        this.skills = skills;
+    }
+
     public Candidate() {
     }
 
@@ -122,7 +148,8 @@ public class Candidate {
                 " Surname: " + this.getLastName() +
                 " Age: " + this.getAge() +
                 " Address: " + this.getAddress() +
-                " University: " + this.getUniversity();
+                " University: " + this.getUniversity() +
+                " Email: " + this.email;
     }
 }
 

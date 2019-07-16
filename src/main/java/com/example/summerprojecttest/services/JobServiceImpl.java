@@ -11,7 +11,7 @@ import java.util.Set;
 @Service
 public class JobServiceImpl implements JobService {
 
-    JobRepository jobRepository;
+    private JobRepository jobRepository;
 
     public JobServiceImpl(JobRepository jobRepository) {
         this.jobRepository = jobRepository;

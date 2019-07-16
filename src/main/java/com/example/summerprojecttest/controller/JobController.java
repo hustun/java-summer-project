@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class JobController {
 
-    JobService jobService;
+    private JobService jobService;
 
     public JobController(JobService jobService) {
         this.jobService = jobService;

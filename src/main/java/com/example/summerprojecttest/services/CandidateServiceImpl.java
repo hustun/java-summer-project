@@ -27,6 +27,12 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    public Candidate findByEmail(String email) {
+        return candidateRepository.findByEmail(email);
+    }
+
+
+    @Override
     public Candidate findById(Integer id) {
         Optional<Candidate> optionalCandidate = candidateRepository.findById(id);
 
