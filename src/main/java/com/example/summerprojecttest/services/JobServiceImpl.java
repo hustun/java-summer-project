@@ -56,4 +56,9 @@ public class JobServiceImpl implements JobService {
     public Set<Job> findAllByOrderByActivationTimeDesc() {
         return jobRepository.findAllByOrderByActivationTimeDesc();
     }
+
+    @Override
+    public Set<Job> findAllByOrderByTitleAsc() {
+        return jobRepository.findAllByOrderByTitleAsc();
+    }
 }

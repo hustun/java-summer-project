@@ -136,6 +136,7 @@ public class LinkedInController {
         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
         httpSession.setAttribute("firstName", firstName);
         httpSession.setAttribute("lastName", lastName);
+        httpSession.setAttribute("isCandidate", true);
 
 
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());

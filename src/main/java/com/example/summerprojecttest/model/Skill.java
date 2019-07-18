@@ -20,6 +20,14 @@ public class Skill{
     public Skill() {
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Skill(String skillName) {
         this.skillName = skillName;
     }
@@ -30,5 +38,15 @@ public class Skill{
 
     public void setSkillName(String skillName) {
         this.skillName = skillName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Skill){
+            if(((Skill) obj).getSkillName().equals(this.skillName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

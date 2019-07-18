@@ -140,7 +140,24 @@ public class Candidate {
         this.university = university;
     }
 
+    public Double matchPercent(Job job){
 
+        if (job.getSkills() != null){
+            if (job.getSkills().size() != 0){
+                double totalSkills = job.getSkills().size();
+                double matchedSkills = 0;
+
+                for (Skill skill : job.getSkills()){
+                    if (SkillsList.contains(this.getSkills(), skill)){
+                        matchedSkills++;
+                    }
+                }
+
+                return matchedSkills/totalSkills;
+            }
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

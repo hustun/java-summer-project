@@ -1,10 +1,12 @@
 package com.example.summerprojecttest.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SkillsList {
 
-    private static ArrayList<Skill> skillsList = new ArrayList<Skill>();
+    private static ArrayList<Skill> skillsList = new ArrayList<>();
 
     public static ArrayList<Skill> getSkillsList() {
         if (skillsList.size() == 0){
@@ -21,5 +23,23 @@ public class SkillsList {
 
         }
         return skillsList;
+    }
+
+    public static boolean contains(ArrayList<Skill> skills, Skill skill){
+        for (Skill s : skills){
+            if (s.equals(skill)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean contains(Set<Skill> skills, Skill skill){
+        for (Skill s : skills){
+            if (s.equals(skill)){
+                return true;
+            }
+        }
+        return false;
     }
 }

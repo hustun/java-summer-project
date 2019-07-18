@@ -8,3 +8,16 @@ div {
 .header-text {
     color: #8f8f8f;
 }
+
+ul {
+    list-style-type: none;
+}
+
+.skill-icon {
+    float: left;
+    line-height: 1.5rem;
+}
+
+.match-icon {
+
+}

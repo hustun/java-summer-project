@@ -5,6 +5,8 @@
     <title>Add Job</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/candidate-form.css}"/>
+
 
     <!--
     <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
@@ -19,38 +21,61 @@
         <p class="h4 mb-4">Save Job</p>
 
         <form action="#" th:action="@{/jobs/new}" th:object="${job}" method="post">
-            <input type="hidden" th:field="*{id}">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <h4 class="m-2 mb-4">Profile Information</h4>
+                    <input type="hidden" th:field="*{id}">
 
-            <input type="text" th:field="*{title}" class="form-control mb-4 col-4" placeholder="Job Title"/>
+                    <input type="text" th:field="*{title}" class="form-control mb-4 col-4" placeholder="Job Title"/>
 
-            <textarea type="text" th:field="*{description}" class="form-control mb-4 col-4" placeholder="Job Description" cols="40" rows="5"></textarea>
+                    <textarea type="text" th:field="*{description}" class="form-control mb-4 col-4" placeholder="Job Description" cols="40" rows="5"></textarea>
 
-            <input type="text" th:field="*{companyName}" class="form-control mb-4 col-4" placeholder="Company Name"/>
+                    <input type="text" th:field="*{companyName}" class="form-control mb-4 col-4" placeholder="Company Name"/>
 
-            <input type="text" th:field="*{location}" class="form-control mb-4 col-4" placeholder="Location"/>
+                    <input type="text" th:field="*{location}" class="form-control mb-4 col-4" placeholder="Location"/>
 
-            <!--<input type="date" th:field="*{activationTime}" class="form-control mb-4 col-4" placeholder="Activation Time"/>
+                    <!--<input type="date" th:field="*{activationTime}" class="form-control mb-4 col-4" placeholder="Activation Time"/>
 
-            <input type="date" th:field="*{closingTime}" class="form-control mb-4 col-4" placeholder="Closing Time"/>-->
+                    <input type="date" th:field="*{closingTime}" class="form-control mb-4 col-4" placeholder="Closing Time"/>-->
 
-            <label for="activationTime">Activation Time</label>
-            <input type="text" th:field="*{activationTime}" class="form-control mb-4 col-4" id="activationTime" name="input" placeholder="YYYY-MM-DD" required
-                   pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                   title="Enter a date in this format YYYY-MM-DD"/>
+                    <label for="activationTime">Activation Time</label>
+                    <input type="text" th:field="*{activationTime}" class="form-control mb-4 col-4" id="activationTime" name="input" placeholder="YYYY-MM-DD" required
+                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                           title="Enter a date in this format YYYY-MM-DD"/>
 
-            <label for="closingTime">Closing Time</label>
-            <input type="text" th:field="*{closingTime}" class="form-control mb-4 col-4" id="closingTime" name="input" placeholder="YYYY-MM-DD" required
-                   pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                   title="Enter a date in this format YYYY-MM-DD"/>
+                    <label for="closingTime">Closing Time</label>
+                    <input type="text" th:field="*{closingTime}" class="form-control mb-4 col-4" id="closingTime" name="input" placeholder="YYYY-MM-DD" required
+                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                           title="Enter a date in this format YYYY-MM-DD"/>
 
-            <label for="inputState">State</label>
-            <select id="inputState" class="form-control mb-4 col-4" th:field="*{status}">
-                <option selected value="ACTIVE">ACTIVE</option>
-                <option value="INACTIVE">INACTIVE</option>
-            </select>
+                    <label for="inputState">State</label>
+                    <select id="inputState" class="form-control mb-4 col-4" th:field="*{status}">
+                        <option selected value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
 
-            <button type="submit" class="btn btn-info col-2">Add</button>
+                    <button type="submit" class="btn btn-info col-2">Add</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-6">
+                        <h4 class="m-2 mb-4">Skills</h4>
+                        <ul>
+                            <li th:each="skill : ${skills}">
+                                <div class="form-check mb-4">
 
+                                    <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:if="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}" checked>
+                                    <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:unless="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}">
+
+
+                                    <label class="form-check-label ml-4" th:text="${skill.skillName}">
+                                        TEST
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 

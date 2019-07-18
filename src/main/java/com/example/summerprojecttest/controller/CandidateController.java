@@ -16,7 +16,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class CandidateController {
@@ -59,7 +61,7 @@ public class CandidateController {
     }
 
     @PostMapping("/candidate/new")
-    public String addJob(@ModelAttribute("candidate") Candidate candidate, @RequestParam(value = "candidateSkill", required = false) List<String> skills){
+    public String addCandidate(@ModelAttribute("candidate") Candidate candidate, @RequestParam(value = "candidateSkill", required = false) List<String> skills){
 
         if(skills != null){
             System.out.println("List length :" +  skills.size());
@@ -73,5 +75,19 @@ public class CandidateController {
 
 
         return "redirect:/jobs";
+    }
+
+    @RequestMapping("/candidate/show/{id}")
+    public String showCandidateById(@PathVariable String id, Model model){
+        Candidate candidate = candidateService.findById(Integer.valueOf(id));
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("skills", candidate.getSkills());
+        model.addAttribute("applications", candidate.getApplications());
+
+        //ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        //HttpSession httpSession = attributes.getRequest().getSession();
+
+
+        return "candidate/show";
     }
 }

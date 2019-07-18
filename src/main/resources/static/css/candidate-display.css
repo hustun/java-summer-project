@@ -1,0 +1,8 @@
+ul {
+    list-style-type: none;
+}
+
+.skill-icon {
+    float: left;
+    line-height: 1.5rem;
+}

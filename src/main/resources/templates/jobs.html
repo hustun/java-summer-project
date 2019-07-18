@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Jobs</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/jobs.css}"/>
+
 
     <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
 </head>
@@ -25,7 +27,7 @@
                     <a class="nav-link" href="#" th:href="@{/jobs}">Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">Candidates</a>
+                    <a class="nav-link" href="#" th:href="@{/candidates}">Candidates</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="">Profile</a>
@@ -46,18 +48,43 @@
     </a>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6 offset-lg-3 job-container" th:each="job : ${jobs}">
-                <h2 ><a th:href="@{'jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
-                <div class="left-side">
-                    <p th:text="${job.description}"></p>
-                    <!--<p th:text="'Status: ' + ${job.status}"></p>-->
-                    <p th:text="'Company: ' + ${job.companyName}"></p>
-                    <a th:href="@{/jobs/updateJob(jobId=${job.id})}" class="btn btn-info btn-sm">Update</a>
-                </div>
-                <div class="right-side">
-                    <i class="fas fa-map-marker"></i>
-                    <p th:text="${job.location}"></p>
-                    <button type="button" class="btn btn-info application-button">Apply</button>
+            <div class="col-lg-3">
+                        <h4 class="text-center">Sort By</h4>
+                        <div class="list-group" id="list-tab" role="tablist">
+                            <a th:if="${sort == 0}" class="list-group-item list-group-item-action active" href="#" th:href="@{/jobs} + '?sortBy=date'" role="tab">Date</a>
+                            <a th:unless="${sort == 0}" class="list-group-item list-group-item-action" href="#" th:href="@{/jobs} + '?sortBy=date'" role="tab">Date</a>
+
+                            <a th:if="${sort == 1}" class="list-group-item list-group-item-action active" href="#" th:href="@{/jobs} + '?sortBy=name'" role="tab">Name</a>
+                            <a th:unless="${sort == 1}" class="list-group-item list-group-item-action" href="#" th:href="@{/jobs} + '?sortBy=name'" role="tab">Name</a>
+
+                            <a th:if="${candidate != null && sort != 2}"  class="list-group-item list-group-item-action" href="#" th:href="@{/jobs} + '?sortBy=relevance'" role="tab">Relevance</a>
+                            <a th:if="${candidate != null && sort == 2}"  class="list-group-item list-group-item-action active" href="#" th:href="@{/jobs} + '?sortBy=relevance'" role="tab">Relevance</a>
+
+                            <span th:unless="${candidate != null}" class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Login to sort by relevance">
+                                <a class="list-group-item list-group-item-action disabled" href="#" th:href="@{/jobs} + '?sortBy=relevance'" role="tab" style="pointer-events: none;">Relevance</a>
+                            </span>
+
+                        </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="job-container container-fluid" th:each="job : ${jobs}">
+                    <h2 ><a th:href="@{'/jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
+                    <div class="left-side">
+                        <p th:text="${job.description}"></p>
+                        <!--<p th:text="'Status: ' + ${job.status}"></p>-->
+                        <p th:text="'Company: ' + ${job.companyName}"></p>
+                        <a href="#" th:href="@{/jobs/updateJob(jobId=${job.id})}" class="btn btn-info btn-sm">Update</a>
+                    </div>
+                    <div class="right-side">
+                        <i class="fas fa-map-marker"></i>
+                        <p th:text="${job.location}"></p>
+                        <a th:if="${candidate != null}" href="#" th:href="@{'/jobs/apply/' + ${job.id} + '/' + ${candidate.id}}" class="btn btn-info application-button">Apply</a>
+
+                        <span th:unless="${candidate != null}" class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Login to sort by relevance">
+                            <button class="btn btn-info application-button" disabled>Apply</button>
+                        </span>
+
+                    </div>
                 </div>
             </div>
         </div>

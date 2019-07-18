@@ -2,3 +2,19 @@ body {
     background-color: #f5f5f5;
     color: #2f2f2f;
 }
+
+.btn-info {
+    color: #ffffff;
+    background-color: #5588a3;
+    border-color: #5588a3;
+}
+
+.btn-info:hover {
+    background-color: #145374;
+    border-color: #145374;
+}
+
+.btn-info:active{
+    background-color: #145374;
+    border-color: #145374;
+}

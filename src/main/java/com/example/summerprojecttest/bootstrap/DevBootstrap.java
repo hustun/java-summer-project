@@ -67,6 +67,20 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         Job job3 = new Job("Web Developer", "This is a web development job posting.",
                 LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "TComp", "Ankara");
         job.getApplications().add(app1);
+
+        job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+
+        job2.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job2.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job2.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+
+        job3.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job3.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+        job3.getSkills().add(skills.get(new Random().nextInt(skills.size())));
+
+
         app1.setJob(job);
 
         candidateRepository.save(hasan);
@@ -100,10 +114,14 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
         Application app2 = new Application(LocalTime.now());
         app2.setApplicant(hasan);
+        app2.setJob(job3);
+        job3.getApplications().add(app2);
         applicationRepository.save(app2);
 
         Application app3 = new Application(LocalTime.now());
-        app3.setApplicant(hasan);
+        app3.setApplicant(aleyna);
+        app3.setJob(job2);
+        job2.getApplications().add(app3);
         applicationRepository.save(app3);
 
         Iterable<Application> applicationIterable = applicationRepository.findAll();

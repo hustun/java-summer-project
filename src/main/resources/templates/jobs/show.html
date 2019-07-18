@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${job.getTitle()}">Job</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
@@ -11,6 +11,9 @@
     <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
 </head>
 <!--/*@thymesVar id="job" type="com.example.summerprojecttest.model.Job"*/-->
+<!--/*@thymesVar id="skill" type="com.example.summerprojecttest.model.Skill"*/-->
+<!--/*@thymesVar id="candidate" type="com.example.summerprojecttest.model.Candidate"*/-->
+
 <body>
 
     <div class="fluid-controller">
@@ -44,8 +47,26 @@
                     </div>
                 </div>
 
+                <h4 class="ml-4 mb-2">Required Skills</h4>
+                <div>
+                    <ul>
+                        <th:block th:object="${skills}" th:each="skill : ${skills}">
+                            <div class="mb-2">
+                                <i class="far fa-check-circle h-100 skill-icon mr-2 text-success" style="line-height: 1.5rem;" th:if="${candidate != null && T(com.example.summerprojecttest.model.SkillsList).contains(candidate.getSkills(), skill)}"></i>
+                                <i class="fas fa-ban h-100 skill-icon mr-2 failed-icon text-danger" style="line-height: 1.5rem;" th:if="${candidate != null && not(T(com.example.summerprojecttest.model.SkillsList).contains(candidate.getSkills(), skill))}"></i>
+                                <i class="far fa-lightbulb h-100 skill-icon mr-2" style="line-height: 1.5rem;" th:if="${candidate == null}"></i>
+
+                                <li class="skill-text" th:text="${skill.getSkillName()}">Item description here...</li>
+                            </div>
+
+                        </th:block>
+                    </ul>
+                    <p th:if="${candidate != null}" th:text="${skillMatchCount} + '/' + ${skillCount}">Test</p>
+                </div>
+
             </div>
-            <div class="right-div col-md-4">
+            <div class="right-div col-md-4" style="margin-top: 10%">
+                <button type="button" class="btn btn-info btn-lg btn-block">Apply</button>
                 Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus cursus mauris a massa sodales, at efficitur arcu laoreet. Integer quis sapien ornare, malesuada lorem vel, venenatis risus. Proin sed semper turpis. In hac habitasse platea dictumst. Suspendisse vel lorem non ex cursus pharetra ut feugiat felis. Proin pellentesque fermentum augue et porttitor. In laoreet risus ac magna porta, et lacinia enim convallis. Maecenas bibendum, odio in finibus faucibus, nisl justo elementum sapien, et pharetra ligula mauris convallis tellus. Integer laoreet eu dui quis pharetra. Fusce maximus mauris in augue rhoncus, ut varius felis lacinia. Fusce nec euismod mi, in congue dolor. Proin hendrerit diam quis felis commodo, vel vestibulum felis pharetra.
             </div>
         </div>

@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface JobService extends BaseService<Job, Integer> {
     Set<Job> findAllByOrderByActivationTimeDesc();
+    Set<Job> findAllByOrderByTitleAsc();
+
 }

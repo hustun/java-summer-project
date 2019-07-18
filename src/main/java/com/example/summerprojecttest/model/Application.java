@@ -68,6 +68,7 @@ public class Application {
     public String toString() {
         return "ID: " + id +
                 " Date: " + date +
-                " Applicant: " + applicant.getFirstName();
+                " Applicant: " + applicant.getFirstName() +
+                " Job: " + job.getTitle();
     }
 }

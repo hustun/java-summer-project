@@ -8,4 +8,5 @@ import java.util.Set;
 
 public interface JobRepository extends CrudRepository<Job, Integer> {
     Set<Job> findAllByOrderByActivationTimeDesc();
+    Set<Job> findAllByOrderByTitleAsc();
 }
