@@ -59,7 +59,7 @@
                         <p th:text="${candidate.address}"></p>
                     </div>
                     <div style="text-align: right">
-                        <a href="#" th:href="@{'/candidate/blacklist/' + ${candidate.id}}" class="btn btn-info application-button">Blacklist</a>
+                        <a th:if="${session.isHR}" href="#" th:href="@{'/candidate/blacklist/' + ${candidate.id}}" class="btn btn-info application-button">Blacklist</a>
                     </div>
 
 

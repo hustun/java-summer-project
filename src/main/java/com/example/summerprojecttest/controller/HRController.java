@@ -13,7 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class HRController {
@@ -38,6 +42,19 @@ public class HRController {
 
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl("/jobs/show/" + application.getJob().getId());
+
+        return redirectView;
+    }
+
+    @RequestMapping("/loginProcess")
+    public RedirectView handleHRLogin(){
+        RedirectView redirectView = new RedirectView();
+
+        ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession httpSession = attributes.getRequest().getSession();
+
+        httpSession.setAttribute("isHR", true);
+        redirectView.setUrl("/");
 
         return redirectView;
     }
