@@ -46,16 +46,23 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-6 offset-lg-3 job-container" th:each="candidate : ${candidates}">
-                <h2 ><a th:href="@{'candidate/show/' +  ${candidate.id}}" th:text=" ${candidate.firstName + ' ' + candidate.lastName}"></a></h2>
                 <div class="left-side">
+                    <h2 ><a th:href="@{'candidate/show/' +  ${candidate.id}}" th:text=" ${candidate.firstName + ' ' + candidate.lastName}"></a></h2>
                     <p th:text="${'Age: ' + candidate.age}"></p>
                     <p th:text="${'Applied: ' + candidate.getApplications().size() + ' jobs'}"></p>
 
                     <!--<a th:href="@{/jobs/updateJob(jobId=${candidate.id})}" class="btn btn-info btn-sm">Update</a>-->
                 </div>
                 <div class="right-side">
-                    <i class="fas fa-map-marker"></i>
-                    <p th:text="${candidate.address}"></p>
+                    <div style="text-align: center">
+                        <i class="fas fa-map-marker"></i>
+                        <p th:text="${candidate.address}"></p>
+                    </div>
+                    <div style="text-align: right">
+                        <a href="#" th:href="@{'/candidate/blacklist/' + ${candidate.id}}" class="btn btn-info application-button">Blacklist</a>
+                    </div>
+
+
                 </div>
             </div>
         </div>

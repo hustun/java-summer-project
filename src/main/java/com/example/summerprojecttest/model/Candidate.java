@@ -140,6 +140,10 @@ public class Candidate {
         this.university = university;
     }
 
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
     public Double matchPercent(Job job){
 
         if (job.getSkills() != null){
@@ -157,6 +161,16 @@ public class Candidate {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Candidate){
+            if(((Candidate) obj).getId().equals(this.id)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

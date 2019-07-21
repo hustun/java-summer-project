@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jobs.css}"/>
     <link rel="stylesheet" th:href="@{/css/job-display.css}"/>
 
     <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
@@ -67,9 +68,44 @@
             </div>
             <div class="right-div col-md-4" style="margin-top: 10%">
                 <button type="button" class="btn btn-info btn-lg btn-block">Apply</button>
-                Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus cursus mauris a massa sodales, at efficitur arcu laoreet. Integer quis sapien ornare, malesuada lorem vel, venenatis risus. Proin sed semper turpis. In hac habitasse platea dictumst. Suspendisse vel lorem non ex cursus pharetra ut feugiat felis. Proin pellentesque fermentum augue et porttitor. In laoreet risus ac magna porta, et lacinia enim convallis. Maecenas bibendum, odio in finibus faucibus, nisl justo elementum sapien, et pharetra ligula mauris convallis tellus. Integer laoreet eu dui quis pharetra. Fusce maximus mauris in augue rhoncus, ut varius felis lacinia. Fusce nec euismod mi, in congue dolor. Proin hendrerit diam quis felis commodo, vel vestibulum felis pharetra.
+                <h2 class="mt-2 mb-2">Applicants</h2>
+                <th:block th:each="app : ${applications}">
+                    <div class="job-container col-12 p-4">
+                        <div class="left-side">
+                            <h4 ><a th:href="@{'/candidate/show/' +  ${app.getApplicant().getId()}}" th:text=" ${app.getApplicant().getFullName()}"></a></h4>
+                            <button type="button" class="btn btn-info" data-toggle="collapse" th:attr="data-target='#demo' + ${app.getApplicant().id}" data-target="#demo">Show Skills</button>
+                            <div th:id="${'demo' + app.getApplicant().id}" id="demo" class="collapse">
+                                <th:block th:each="skill : ${app.getApplicant().getSkills()}">
+                                    <div class="mb-2">
+                                        <i class="far fa-lightbulb h-100 skill-icon mr-2" style="line-height: 1.5rem;"></i>
+
+                                        <li class="skill-text" th:text="${skill.getSkillName()}">Item description here...</li>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="right-side">
+                            <p th:text="'Status: ' + ${app.status}">Status: status</p>
+                            <div class="dropleft show">
+                                <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/accept'}">Accept</a>
+                                    <a class="dropdown-item" href="#">In process</a>
+                                    <a class="dropdown-item" href="#">Reject</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

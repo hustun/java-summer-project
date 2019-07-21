@@ -1,9 +1,7 @@
 package com.example.summerprojecttest.controller;
 
-import com.example.summerprojecttest.model.Candidate;
-import com.example.summerprojecttest.model.Job;
-import com.example.summerprojecttest.model.Skill;
-import com.example.summerprojecttest.model.SkillsList;
+import com.example.summerprojecttest.model.*;
+import com.example.summerprojecttest.services.BlacklistEntryService;
 import com.example.summerprojecttest.services.CandidateService;
 import com.example.summerprojecttest.services.SkillService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,11 +23,13 @@ public class CandidateController {
 
     private CandidateService candidateService;
     private SkillService skillService;
+    private BlacklistEntryService blacklistEntryService;
     private ArrayList<Skill> skills = new ArrayList<>();
 
-    public CandidateController(CandidateService candidateService, SkillService skillService) {
+    public CandidateController(CandidateService candidateService, SkillService skillService, BlacklistEntryService blacklistEntryService) {
         this.candidateService = candidateService;
         this.skillService = skillService;
+        this.blacklistEntryService = blacklistEntryService;
         this.skills = SkillsList.getSkillsList();
     }
 
@@ -89,5 +89,18 @@ public class CandidateController {
 
 
         return "candidate/show";
+    }
+
+    @RequestMapping("candidate/blacklist/{id}")
+    public String blacklistCandidate(@PathVariable String id, Model model){
+        Candidate candidate = candidateService.findById(Integer.valueOf(id));
+        BlacklistEntry blacklistEntry = new BlacklistEntry(candidate, "Test");
+
+        for ( Application application: candidate.getApplications()){
+            application.setStatus(StatusType.REJECTED);
+        }
+        blacklistEntryService.save(blacklistEntry);
+
+        return "index";
     }
 }

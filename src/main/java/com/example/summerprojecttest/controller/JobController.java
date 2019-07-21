@@ -68,6 +68,19 @@ public class JobController {
                             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
                     sortedMap.entrySet().forEach(entry->{System.out.println(entry.getKey().getTitle() + " " + entry.getValue());});
 
+                    ArrayList<Double> percents = new ArrayList<>();
+                    for (Job job : sortedMap.keySet()){
+                        Double skillMatchCount = 0D;
+                        for(Skill skill : candidate.getSkills()){
+                            if (SkillsList.contains(job.getSkills(), skill)){
+                                skillMatchCount++;
+                            }
+                        }
+                        percents.add(skillMatchCount/job.getSkills().size());
+
+                    }
+                    model.addAttribute("percents", percents);
+
                     model.addAttribute("jobs", sortedMap.keySet());
                     model.addAttribute("sort", 2);
                 }
@@ -106,6 +119,8 @@ public class JobController {
         Job job = jobService.findById(Integer.valueOf(id));
         model.addAttribute("job", job);
         model.addAttribute("skills", job.getSkills());
+        model.addAttribute("applications", job.getApplications());
+
 
         ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession httpSession = attributes.getRequest().getSession();

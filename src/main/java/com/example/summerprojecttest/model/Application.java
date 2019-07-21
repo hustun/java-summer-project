@@ -16,6 +16,11 @@ public class Application {
     @NotNull
     private LocalTime date;
 
+    @Column(name = "status")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
+
     @ManyToOne
     @JoinColumn(name = "candidate_id")
     private Candidate applicant;
@@ -29,6 +34,12 @@ public class Application {
 
     public Application(@NotNull LocalTime date) {
         this.date = date;
+        this.status = StatusType.PENDING;
+    }
+
+    public Application(@NotNull LocalTime date, StatusType status) {
+        this.date = date;
+        this.status = status;
     }
 
 
@@ -62,6 +73,14 @@ public class Application {
 
     public void setJob(Job job) {
         this.job = job;
+    }
+
+    public StatusType getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusType status) {
+        this.status = status;
     }
 
     @Override
