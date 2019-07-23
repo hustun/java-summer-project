@@ -50,4 +50,9 @@ public class BlacklistEntryServiceImpl implements BlacklistEntryService {
     public void deleteById(Integer id) {
         blacklistEntryRepository.deleteById(id);
     }
+
+    @Override
+    public BlacklistEntry findByCandidateId(Integer id) {
+        return blacklistEntryRepository.findByCandidateId(id);
+    }
 }

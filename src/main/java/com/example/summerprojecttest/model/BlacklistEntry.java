@@ -18,6 +18,9 @@ public class BlacklistEntry {
     @NotEmpty
     private String reason;
 
+    public BlacklistEntry() {
+    }
+
     public BlacklistEntry(Candidate candidate, String reason) {
         this.candidate = candidate;
         this.reason = reason;

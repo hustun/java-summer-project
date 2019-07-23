@@ -4,10 +4,18 @@ import com.example.summerprojecttest.model.*;
 import com.example.summerprojecttest.repo.*;
 import com.example.summerprojecttest.services.CandidateServiceImpl;
 import com.example.summerprojecttest.services.SkillService;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,24 +29,42 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     private ApplicationRepository applicationRepository;
     private JobRepository jobRepository;
     private SkillRepository skillRepository;
+    private LanguageRepository languageRepository;
     private BlacklistEntryRepository blacklistEntryRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public DevBootstrap(CandidateRepository candidateRepository, ApplicationRepository applicationRepository, JobRepository jobRepository, SkillRepository skillRepository, BlacklistEntryRepository blacklistEntryRepository) {
+
+    public DevBootstrap(CandidateRepository candidateRepository, ApplicationRepository applicationRepository,
+                        JobRepository jobRepository, SkillRepository skillRepository,
+                        BlacklistEntryRepository blacklistEntryRepository, LanguageRepository languageRepository) {
         this.candidateRepository = candidateRepository;
         this.applicationRepository = applicationRepository;
         this.jobRepository = jobRepository;
         this.skillRepository = skillRepository;
+        this.languageRepository = languageRepository;
         this.blacklistEntryRepository = blacklistEntryRepository;
     }
 
     private void initData() {
+        entityManager=entityManager.getEntityManagerFactory().createEntityManager();
+        FullTextEntityManager fullTextEntityManager
+                = Search.getFullTextEntityManager(entityManager);
+        try {
+            fullTextEntityManager.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ArrayList<Skill> skills = SkillsList.getSkillsList();
+        ArrayList<Language> languages = LanguageList.getLanguageList();
 
 
         Candidate hasan = new Candidate("Hasan", "Üstün", 22, "İstanbul", "Yeditepe");
-        Candidate aleyna = new Candidate("Has", "Has", 20, "İstanbul", "Yeditepe");
+        Candidate aleyna = new Candidate("Aleyna", "Gürsoy", 20, "İstanbul", "Yeditepe");
         Candidate darkHasan = new Candidate("Kötü", "Hasan", 21, "İstanbul", "Yeditepe");
+        Candidate john = new Candidate("John", "Thompson", 27, "Los Angeles", "Stanford");
+
 
         hasan.setUserName("hasbey");
         aleyna.setUserName("has");
@@ -54,21 +80,25 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
             skillRepository.save(skill);
         }
 
+        for ( Language language : languages){
+            languageRepository.save(language);
+        }
+
         //hasan.setEmail("hasan.ustun@std.yeditepe.edu.tr");
 
 
 
         System.out.println(Timestamp.valueOf(LocalDateTime.now()));
         Job job = new Job("Software Engineer", "This is a software engineering job posting.",
-                LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "HasComp", "İstanbul");
+                LocalDateTime.now().minusDays(5), LocalDateTime.now(), Job.Status.ACTIVE, "HasComp", "İstanbul");
         Job job2 = new Job("Software Architect", "This is a software architecture job posting.",
-                LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "Company2", "İstanbul");
+                LocalDateTime.now().minusHours(6), LocalDateTime.now(), Job.Status.ACTIVE, "Company2", "İstanbul");
         Job job3 = new Job("Web Developer", "This is a web development job posting.",
-                LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "TComp", "Ankara");
+                LocalDateTime.now().minusMinutes(7), LocalDateTime.now(), Job.Status.ACTIVE, "TComp", "Ankara");
         Job job4 = new Job("Web Designer", "This is a web design job posting.",
-                LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "CompanyNull", "Seoul");
+                LocalDateTime.now(), LocalDateTime.now(), Job.Status.ACTIVE, "CompanyNull", "Seoul");
         Job job5 = new Job("Fullstack Developer", "This is a fullstack development job posting.",
-                LocalDate.now(), LocalDate.now(), Job.Status.ACTIVE, "MyCompany", "Los Angeles");
+                LocalDateTime.now(), LocalDateTime.now(), Job.Status.ACTIVE, "MyCompany", "Los Angeles");
 
         job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
         job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
@@ -95,6 +125,7 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         candidateRepository.save(hasan);
         candidateRepository.save(aleyna);
         candidateRepository.save(darkHasan);
+        candidateRepository.save(john);
 
         jobRepository.save(job);
         jobRepository.save(job2);

@@ -2,10 +2,10 @@ package com.example.summerprojecttest.controller;
 
 import com.example.summerprojecttest.model.*;
 import com.example.summerprojecttest.repo.JobRepository;
-import com.example.summerprojecttest.services.ApplicationService;
-import com.example.summerprojecttest.services.CandidateService;
-import com.example.summerprojecttest.services.JobService;
-import com.example.summerprojecttest.services.SkillService;
+import com.example.summerprojecttest.services.*;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,13 +32,18 @@ public class JobController {
     private SkillService skillService;
     private CandidateService candidateService;
     private ApplicationService applicationService;
+    private BlacklistEntryService blacklistEntryService;
     private ArrayList<Skill> skills = new ArrayList<>();
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public JobController(JobService jobService, SkillService skillService, CandidateService candidateService, ApplicationService applicationService) {
+    public JobController(JobService jobService, SkillService skillService, CandidateService candidateService,
+                         ApplicationService applicationService, BlacklistEntryService blacklistEntryService) {
         this.jobService = jobService;
         this.skillService = skillService;
         this.candidateService = candidateService;
         this.applicationService = applicationService;
+        this.blacklistEntryService = blacklistEntryService;
         this.skills = SkillsList.getSkillsList();
     }
 
@@ -42,6 +51,16 @@ public class JobController {
     public String showJobsPage(@RequestParam(required = false, value = "sortBy") String sortBy, Model model){
 
         model.addAttribute("candidate", getCandidate());
+
+        if(getCandidate() != null){
+            boolean isBlacklisted = true;
+            if (blacklistEntryService.findByCandidateId(getCandidate().getId()) == null){
+                isBlacklisted = false;
+            }
+            model.addAttribute("isBlacklisted", isBlacklisted);
+        }
+
+        setActiveDuration();
 
         if (sortBy == null){
             sortBy = "date";
@@ -117,9 +136,11 @@ public class JobController {
     @RequestMapping("/jobs/show/{id}")
     public String showJobsById(@PathVariable String id, Model model){
         Job job = jobService.findById(Integer.valueOf(id));
+        job.updateDuration();
         model.addAttribute("job", job);
         model.addAttribute("skills", job.getSkills());
         model.addAttribute("applications", job.getApplications());
+        model.addAttribute("candidateObject", getCandidate());
 
 
         ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -184,6 +205,13 @@ public class JobController {
         Job job = jobService.findById(Integer.valueOf(jobId));
         Candidate candidate = candidateService.findById(Integer.valueOf(candidateId));
 
+        if (getCandidate() == null || blacklistEntryService.findByCandidateId(getCandidate().getId()) != null){
+            return "redirect:/";
+        }
+        if (getCandidate() != null && getCandidate().isApplied(job)){
+            return "redirect:/jobs";
+        }
+
         Application application = new Application(LocalTime.now());
         application.setJob(job);
         application.setApplicant(candidate);
@@ -192,17 +220,123 @@ public class JobController {
         candidate.getApplications().add(application);
 
         applicationService.save(application);
+        model.addAttribute("candidateObject", candidate);
 
         //ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         //HttpSession httpSession = attributes.getRequest().getSession();
 
 
-        return "index";
+        return "redirect:/jobs";
+    }
+
+    @PostMapping("/jobs/search")
+    public String searchJob(@RequestParam(value = "firstText") String firstText, @RequestParam(value = "sortBy") String sortBy, Model model){
+
+        System.out.println(firstText + " " + sortBy);
+
+        if (sortBy.equals("candidate")){
+            List<Candidate> searchResults = (List<Candidate>) searchResults(firstText, sortBy);
+            for (Candidate candidate : searchResults){
+                System.out.println(candidate.toString());
+            }
+            model.addAttribute("candidates", searchResults);
+            model.addAttribute("candidateObject", getCandidate());
+
+            return "candidates";
+        }
+        else if (sortBy.equals("job")){
+            model.addAttribute("candidate", getCandidate());
+
+            if(getCandidate() != null){
+                boolean isBlacklisted = true;
+                if (blacklistEntryService.findByCandidateId(getCandidate().getId()) == null){
+                    isBlacklisted = false;
+                }
+                model.addAttribute("isBlacklisted", isBlacklisted);
+            }
+
+            List<Job> searchResults = (List<Job>) searchResults(firstText, sortBy);
+            for (Job job : searchResults){
+                System.out.println(job.toString());
+            }
+            for (Job job : searchResults){
+                job.updateDuration();
+            }
+            model.addAttribute("jobs", searchResults);
+            model.addAttribute("sort", 0);
+
+            return "jobs";
+
+        }
+
+        return "redirect:/jobs";
     }
 
     private Candidate getCandidate(){
         Candidate candidate = candidateService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return candidate;
+    }
+
+    private void setActiveDuration() {
+        for (Job job : jobService.findAll()){
+            job.updateDuration();
+        }
+    }
+
+    private List<?> searchResults(String searchTerm, String searchBy){
+        entityManager.getEntityManagerFactory().createEntityManager();
+        FullTextEntityManager fullTextEntityManager
+                = Search.getFullTextEntityManager(entityManager);
+
+        if (searchBy.equals("candidate")){
+
+            QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+                    .buildQueryBuilder()
+                    .forEntity(Candidate.class)
+                    .overridesForField("firstName", "customanalyzer_query")
+                    .overridesForField("lastName", "customanalyzer_query")
+                    .overridesForField("bio", "customanalyzer_query")
+                    .overridesForField("university", "customanalyzer_query")
+                    .get();
+
+            org.apache.lucene.search.Query query = queryBuilder
+                    .simpleQueryString()
+                    .onFields("firstName", "lastName", "bio", "university")
+                    .matching(searchTerm)
+                    .createQuery();
+
+            org.hibernate.search.jpa.FullTextQuery jpaQuery
+                    = fullTextEntityManager.createFullTextQuery(query, Candidate.class);
+
+            System.out.println("Results: " + jpaQuery.getResultSize());
+            List<Candidate> results = jpaQuery.getResultList();
+            return results;
+        }else if (searchBy.equals("job")){
+
+            QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+                    .buildQueryBuilder()
+                    .forEntity(Job.class)
+                    .overridesForField("title", "customanalyzer_query")
+                    .overridesForField("description", "customanalyzer_query")
+                    .overridesForField("companyName", "customanalyzer_query")
+                    .overridesForField("location", "customanalyzer_query")
+                    .get();
+
+            org.apache.lucene.search.Query query = queryBuilder
+                    .simpleQueryString()
+                    .onFields("title", "description", "companyName", "location")
+                    .matching(searchTerm)
+                    .createQuery();
+
+            org.hibernate.search.jpa.FullTextQuery jpaQuery
+                    = fullTextEntityManager.createFullTextQuery(query, Job.class);
+
+            System.out.println("Results: " + jpaQuery.getResultSize());
+            List<Job> results = jpaQuery.getResultList();
+            return results;
+        }else{
+            return null;
+        }
     }
 
 

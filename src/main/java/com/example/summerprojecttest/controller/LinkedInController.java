@@ -81,6 +81,8 @@ public class LinkedInController {
         // linkedin api to get linkedidn profile detail
         String linedkinDetailUri = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
         String linedkinProfileUri = "https://api.linkedin.com/v2/me";
+        String linkedinPhotoUri = "https://api.linkedin.com/v2/me?projection=(id,profilePicture(displayImage~:playableStreams))";
+
         //store your access token
         RestTemplate restTemplate = new RestTemplate();
         String accessTokenRequest = restTemplate.getForObject(accessTokenUri, String.class);
@@ -96,20 +98,21 @@ public class LinkedInController {
         HttpEntity<String> entity = new HttpEntity<String>("", headers);
         ResponseEntity<String> linkedinDetailRequest = restTemplate.exchange(linedkinDetailUri, HttpMethod.GET, entity, String.class);
         ResponseEntity<String> linkedinProfileRequest = restTemplate.exchange(linedkinProfileUri, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> linkedinPhotoRequest = restTemplate.exchange(linkedinPhotoUri, HttpMethod.GET, entity, String.class);
+
 
         //store json data
         JSONObject jsonObjOfLinkedinDetail = new JSONObject(linkedinDetailRequest.getBody());
         JSONObject jsonObjOfLinkedinProfile = new JSONObject(linkedinProfileRequest.getBody());
+        JSONObject jsonObjOfLinkedinPhoto = new JSONObject(linkedinPhotoRequest.getBody());
 
         //print json data
         System.out.println("-----------JSON-------------");
         System.out.println(jsonObjOfLinkedinDetail);
         System.out.println(jsonObjOfLinkedinProfile);
+        System.out.println(jsonObjOfLinkedinPhoto);
         System.out.println("-----------JSON-------------");
 
-        System.out.println("email: " + jsonObjOfLinkedinDetail.getFieldAsString("emailAddress"));
-        System.out.println("handle: " + jsonObjOfLinkedinDetail.getFieldAsString("handle~"));
-        System.out.println("handle: " + jsonObjOfLinkedinDetail);
         JsonParser jsonParser = JsonParserFactory.getJsonParser();
 
         //mail matcher
@@ -124,6 +127,10 @@ public class LinkedInController {
         String lastName = getProfileInfo(jsonObjOfLinkedinProfile, "localizedLastName\":\"[^\"]+", 20, "Last Name: ");
         //--
 
+        //last name matcher
+        String photo = getProfileInfo(jsonObjOfLinkedinPhoto, "identifier\":\"[^\"]+", 13, "URL: ");
+        //--
+
 
         ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession httpSession = attributes.getRequest().getSession();
@@ -136,6 +143,10 @@ public class LinkedInController {
         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
         httpSession.setAttribute("firstName", firstName);
         httpSession.setAttribute("lastName", lastName);
+        httpSession.setAttribute("photo", photo);
+        if (httpSession.getAttribute("isHR") != null && (boolean) httpSession.getAttribute("isHR")){
+            httpSession.removeAttribute("isHR");
+        }
         httpSession.setAttribute("isCandidate", true);
 
 
@@ -163,6 +174,7 @@ public class LinkedInController {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(jsonObject.toString());
         boolean found = false;
+
         if (matcher.find()) {
             System.out.println("I found the text " + matcher.group() + " starting at index " +
                     matcher.start() + " and ending at index " + matcher.end());

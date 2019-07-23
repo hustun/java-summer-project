@@ -14,8 +14,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests().antMatchers("/","/home").permitAll()
                 .antMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .antMatchers("/jobs", "/authorization/**", "/linkedin/**").permitAll()
-                .antMatchers("/loginProcess").fullyAuthenticated()
+                .antMatchers("/jobs", "/authorization/**", "/linkedin/**", "/jobs/search").permitAll()
+                .antMatchers("/loginProcess", "/jobs/apply/**").fullyAuthenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().defaultSuccessUrl("/loginProcess")
@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/protectedLinks")
+                .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID");
     }
 

@@ -18,3 +18,14 @@ body {
     background-color: #145374;
     border-color: #145374;
 }
+
+.welcome-text {
+    color: #f5f5f5;
+    margin-bottom: 0;
+    margin-right: 1rem;
+}
+
+.linkedin-button {
+    border-width: 0;
+    background-color: #0077b5;
+}

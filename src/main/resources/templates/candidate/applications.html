@@ -2,14 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Candidates</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/jobs.css}"/>
-    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <title>Applications</title>
 
-    <script src="https://kit.fontawesome.com/26d9a9927d.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jobs.css}"/>
+    <link rel="stylesheet" th:href="@{/css/candidate-display.css}"/>
 </head>
-<!--/*@thymesVar id="candidate" type="com.example.summerprojecttest.model.Candidate"*/-->
 <body>
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar bg-dark navbar-dark">
@@ -37,7 +36,7 @@
                 </li>
             </ul>
 
-            <a th:if="${session.isHR == null && session.isCandidate == null}" class="btn btn-primary ml-auto linkedin-button" href="#" th:href="@{/authorization/}" role="button"> <i class="fab fa-linkedin mr-1"></i> Login as Candidate</a>
+            <a th:if="${session.isHR == null && session.isCandidate == null}" class="btn btn-primary ml-auto linkedin-button" href="#" th:href="@{/authorization/}" role="button">Login as Candidate</a>
             <a th:if="${session.isHR == null && session.isCandidate == null}" class="btn btn-light ml-2 btn-light" href="#" th:href="@{/login}" role="button">Login as HR</a>
 
             <p th:if="${session.isCandidate != null}" class="welcome-text ml-auto" th:text="${'Welcome ' + session.firstName + ' ' + session.lastName}">Anonymous User</p>
@@ -49,47 +48,39 @@
         </div>
     </nav>
 
-    <h1 class="page-title pt-5 pb-1 ">Candidates</h1>
-    <hr>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6 offset-lg-3 job-container" th:each="candidate : ${candidates}">
+    <div th:if="${candidate.email == #authentication.name || session.isHR != null}" class="container-fluid ml-4">
+        <h3 class="mb-2">Applications</h3>
+        <hr>
+        <th:block th:each="app : ${applications}">
+            <div class="job-container col-md-6">
                 <div class="left-side">
-                    <h2 ><a th:href="@{'candidate/show/' +  ${candidate.id}}" th:text=" ${candidate.firstName + ' ' + candidate.lastName}"></a></h2>
-                    <p th:text="${'Age: ' + candidate.age}"></p>
-                    <p th:text="${'Applied: ' + candidate.getApplications().size() + ' jobs'}"></p>
-
-                    <div th:if="${session.isHR}" th:id="${'demo' + candidate.id}" id="demo" class="collapse mb-2">
-                        <form th:action="@{'/candidate/blacklist/' + ${candidate.id}}" method="post">
-                            <div class="form-row">
-                                <div class="col-9">
-                                    <input name="reasonText" type="text" class="form-control" placeholder="Reason" required>
-                                </div>
-                                <div class="col-3">
-                                    <button type="submit" class="btn btn-info application-button">Blacklist</button>
-                                </div>
-                            </div>
-                        </form>
-                        <!--<a href="#" th:href="@{'/candidate/blacklist/' + ${candidate.id}}" class="btn btn-info application-button">Blacklist</a>-->
-                    </div>
+                    <h4 ><a th:href="@{'/jobs/show/' +  ${app.getJob().getId()}}" th:text=" ${app.getJob().title}"></a></h4>
+                    <p th:text="${app.getJob().description}"></p>
+                    <!--<p th:text="'Status: ' + ${job.status}"></p>-->
+                    <p th:text="'Company: ' + ${app.getJob().companyName}"></p>
+                    <p th:text="'Location: ' + ${app.getJob().location}"></p>
                 </div>
                 <div class="right-side">
-                    <div style="text-align: center">
-                        <i class="fas fa-map-marker"></i>
-                        <p th:text="${candidate.address}"></p>
-                    </div>
-                    <div style="text-align: right">
-                        <button th:if="${session.isHR}" type="button" class="btn btn-info btn-sm" data-toggle="collapse" th:attr="data-target='#demo' + ${candidate.id}" data-target="#demo">Show Required Skills</button>
-                    </div>
+                    <p th:text="'Status: ' + ${app.status}">Status: status</p>
+                    <div class="dropleft show">
+                        <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Manage
+                        </a>
 
-
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/accept'}">Accept</a>
+                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/inProcess'}">In process</a>
+                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/reject'}">Reject</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </body>
 </html>

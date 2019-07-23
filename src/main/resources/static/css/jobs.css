@@ -50,3 +50,16 @@ a:hover {
     background-color: #5588a3;
     border-color: #5588a3;
 }
+
+.deactivated-job {
+    color: #8f8f8f;
+}
+
+.skill-icon {
+    float: left;
+    line-height: 1.5rem;
+}
+
+ul {
+    list-style-type: none;
+}

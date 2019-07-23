@@ -1,5 +1,15 @@
 package com.example.summerprojecttest.model;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
+import org.apache.lucene.analysis.ngram.NGramFilterFactory;
+import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Parameter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -7,6 +17,33 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Indexed
+@AnalyzerDef(name = "customanalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StandardFilterFactory.class),
+//                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+//                        @Parameter(name = "language", value = "English")
+//                }),
+
+                @TokenFilterDef(
+                        factory = NGramFilterFactory.class, // Generate prefix tokens
+                        params = {
+                                @Parameter(name = "minGramSize", value = "1"),
+                                @Parameter(name = "maxGramSize", value = "10")
+                        }
+                )
+        })
+@AnalyzerDef(name = "customanalyzer_query",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StandardFilterFactory.class),
+//                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+//                        @Parameter(name = "language", value = "English")
+//                })// Lowercase all characters
+        })
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +55,20 @@ public class Candidate {
 
     @Column(name = "firstName")
     @NotEmpty
+    @Field(termVector = TermVector.YES)
+    @Analyzer(definition = "customanalyzer")
     private String firstName;
 
     @Column(name = "lastName")
     @NotEmpty
+    @Field(termVector = TermVector.YES)
+    @Analyzer(definition = "customanalyzer")
     private String lastName;
+
+    @Column(name = "title")
+    @Field(termVector = TermVector.YES)
+    @Analyzer(definition = "customanalyzer")
+    private String title;
 
     @Column(name = "age")
     @NotNull
@@ -30,10 +76,19 @@ public class Candidate {
 
     @Column(name = "address")
     @NotEmpty
+    @Lob
     private String address;
+
+    @Column(name = "bio")
+    @Lob
+    @Field(termVector = TermVector.YES)
+    @Analyzer(definition = "customanalyzer")
+    private String bio;
 
     @Column(name = "university")
     @NotEmpty
+    @Field(termVector = TermVector.YES)
+    @Analyzer(definition = "customanalyzer")
     private String university;
 
     @Column(name = "email")
@@ -48,6 +103,16 @@ public class Candidate {
             joinColumns = @JoinColumn(name = "candidate_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<Skill> skills = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "candidate_languages",
+            joinColumns = @JoinColumn(name = "candidate_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id"))
+    private Set<Language> languages = new HashSet<>();
+
+    @Column(name = "photo")
+    private String photo;
 
     public Integer getId() {
         return id;
@@ -129,6 +194,38 @@ public class Candidate {
         this.skills = skills;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Set<Language> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Set<Language> languages) {
+        this.languages = languages;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Candidate() {
     }
 
@@ -161,6 +258,15 @@ public class Candidate {
             }
         }
         return null;
+    }
+
+    public boolean isApplied(Job job){
+        for (Application application: this.getApplications()){
+            if(application.getJob().equals(job)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

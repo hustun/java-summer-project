@@ -40,12 +40,12 @@
 
                     <label for="activationTime">Activation Time</label>
                     <input type="text" th:field="*{activationTime}" class="form-control mb-4 col-4" id="activationTime" name="input" placeholder="YYYY-MM-DD" required
-                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31)) (\d{2}):(\d{2}):(\d{2})"
                            title="Enter a date in this format YYYY-MM-DD"/>
 
                     <label for="closingTime">Closing Time</label>
                     <input type="text" th:field="*{closingTime}" class="form-control mb-4 col-4" id="closingTime" name="input" placeholder="YYYY-MM-DD" required
-                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31)) (\d{2}):(\d{2}):(\d{2})"
                            title="Enter a date in this format YYYY-MM-DD"/>
 
                     <label for="inputState">State</label>
