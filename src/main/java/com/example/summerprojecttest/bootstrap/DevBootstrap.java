@@ -65,9 +65,6 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         Candidate darkHasan = new Candidate("Kötü", "Hasan", 21, "İstanbul", "Yeditepe");
         Candidate john = new Candidate("John", "Thompson", 27, "Los Angeles", "Stanford");
 
-
-        hasan.setUserName("hasbey");
-        aleyna.setUserName("has");
         hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
         hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
         hasan.getSkills().add(skills.get(new Random().nextInt(skills.size())));
@@ -141,53 +138,42 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
             System.out.println(candidate.toString());
         }
 
-
-        /*
-        Optional<Candidate> o = candidateRepository.findById(1);
-        if(o.isPresent() ){
-            Candidate candidate = (Candidate) o.get();
-            System.out.println(candidate.toString());
-        }
-        */
-
-        //applicationRepository.delete(app1);
-
-        Application app1 = new Application(LocalTime.now());
+        Application app1 = new Application(LocalDateTime.now());
         hasan.getApplications().add(app1);
         app1.setApplicant(hasan);
         app1.setJob(job);
         job.getApplications().add(app1);
         applicationRepository.save(app1);
 
-        Application app2 = new Application(LocalTime.now());
+        Application app2 = new Application(LocalDateTime.now());
         app2.setApplicant(hasan);
         hasan.getApplications().add(app2);
         app2.setJob(job3);
         job3.getApplications().add(app2);
         applicationRepository.save(app2);
 
-        Application app3 = new Application(LocalTime.now());
+        Application app3 = new Application(LocalDateTime.now());
         app3.setApplicant(aleyna);
         aleyna.getApplications().add(app3);
         app3.setJob(job2);
         job2.getApplications().add(app3);
         applicationRepository.save(app3);
 
-        Application app4 = new Application(LocalTime.now());
+        Application app4 = new Application(LocalDateTime.now());
         app4.setApplicant(aleyna);
         aleyna.getApplications().add(app4);
         app4.setJob(job4);
         job4.getApplications().add(app4);
         applicationRepository.save(app4);
 
-        Application app5 = new Application(LocalTime.now());
+        Application app5 = new Application(LocalDateTime.now());
         app5.setApplicant(hasan);
         hasan.getApplications().add(app5);
         app5.setJob(job5);
         job5.getApplications().add(app5);
         applicationRepository.save(app5);
 
-        Application app6 = new Application(LocalTime.now());
+        Application app6 = new Application(LocalDateTime.now());
         app6.setApplicant(darkHasan);
         darkHasan.getApplications().add(app6);
         app6.setJob(job5);

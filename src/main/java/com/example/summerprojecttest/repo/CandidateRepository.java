@@ -9,7 +9,5 @@ public interface CandidateRepository extends CrudRepository<Candidate, Integer> 
 
     Set<Candidate> findByLastName(String lastName);
 
-    Candidate findByUserName(String userName);
-
     Candidate findByEmail(String email);
 }

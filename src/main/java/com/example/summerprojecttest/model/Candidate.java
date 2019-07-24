@@ -49,10 +49,6 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "userName")
-    //@NotEmpty
-    private String userName;
-
     @Column(name = "firstName")
     @NotEmpty
     @Field(termVector = TermVector.YES)
@@ -169,14 +165,6 @@ public class Candidate {
 
     public void setApplications(Set<Application> applications) {
         this.applications = applications;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getEmail() {

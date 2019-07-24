@@ -44,7 +44,8 @@ html {
 }
 
 .footer {
-    background-color: #2f2f2f77;
+    opacity: 0.5;
+    background-color: #2f2f2f;
     height: 150px;
     width: 100%;
     padding: 25px 100px;

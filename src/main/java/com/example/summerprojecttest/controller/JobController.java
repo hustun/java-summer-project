@@ -50,6 +50,7 @@ public class JobController {
     @RequestMapping("/jobs")
     public String showJobsPage(@RequestParam(required = false, value = "sortBy") String sortBy, Model model){
 
+        //check job status change
         for (Job job : jobService.findAll()){
             if(job.getStatus() == Job.Status.ACTIVE){
                 if( job.getClosingTime() != null && job.getClosingTime().isBefore(LocalDateTime.now())){
@@ -72,16 +73,21 @@ public class JobController {
 
         model.addAttribute("candidate", getCandidate());
 
+        //check if blacklisted
         if(getCandidate() != null){
             boolean isBlacklisted = true;
             if (blacklistEntryService.findByCandidateId(getCandidate().getId()) == null){
                 isBlacklisted = false;
+            }
+            else{
+                model.addAttribute("reason", blacklistEntryService.findByCandidateId((getCandidate().getId())).getReason());
             }
             model.addAttribute("isBlacklisted", isBlacklisted);
         }
 
         setActiveDuration();
 
+        //return jobs depending on sorting criteria
         if (sortBy == null){
             sortBy = "date";
         }
@@ -100,7 +106,6 @@ public class JobController {
                     Candidate candidate = getCandidate();
                     Map<Job, Double> jobMap = new HashMap<>();
                     for (Job job : availableJobs){
-                        System.out.println(candidate.matchPercent(job));
                         jobMap.put(job,candidate.matchPercent(job));
                     }
                     Map<Job, Double> sortedMap = jobMap.entrySet().stream()
@@ -115,7 +120,7 @@ public class JobController {
                                 skillMatchCount++;
                             }
                         }
-                        percents.add( Math.floor( (skillMatchCount/(job.getSkills().size())) *100) / 100);
+                        percents.add( Math.floor( (skillMatchCount/(job.getSkills().size())) *100));
 
                     }
 
@@ -142,6 +147,7 @@ public class JobController {
     @PostMapping("/jobs/new")
     public String addJob(@ModelAttribute("job") Job job, @RequestParam(value = "jobSkill", required = false) List<String> skills){
 
+        //set job skills
         if(skills != null){
             for (String skillName : skills){
                 job.getSkills().add(skillService.findBySkillName(skillName));
@@ -149,6 +155,7 @@ public class JobController {
             }
         }
 
+        //set job creation time
         if(job.getCreationTime() == null){
             job.setCreationTime(LocalDateTime.now());
         }
@@ -236,7 +243,7 @@ public class JobController {
             return "redirect:/jobs";
         }
 
-        Application application = new Application(LocalTime.now());
+        Application application = new Application(LocalDateTime.now());
         application.setJob(job);
         application.setApplicant(candidate);
 

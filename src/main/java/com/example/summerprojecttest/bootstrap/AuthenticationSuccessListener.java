@@ -31,8 +31,6 @@ public class AuthenticationSuccessListener  implements ApplicationListener<Inter
     public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event) {
         System.out.println("Successful login.");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        System.out.println(candidateService.findByUserName(name).getId());
 
         try {
             URL url = new URL("https://www.linkedin.com/oauth/v2/authorization");

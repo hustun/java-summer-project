@@ -22,11 +22,6 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Candidate findByUserName(String userName) {
-        return candidateRepository.findByUserName(userName);
-    }
-
-    @Override
     public Candidate findByEmail(String email) {
         return candidateRepository.findByEmail(email);
     }

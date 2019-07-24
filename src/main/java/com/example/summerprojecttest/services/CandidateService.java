@@ -9,7 +9,5 @@ public interface CandidateService extends BaseService<Candidate, Integer>{
 
     Set<Candidate> findByLastName(String lastName);
 
-    Candidate findByUserName(String userName);
-
     Candidate findByEmail(String email);
 }

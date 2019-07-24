@@ -46,20 +46,6 @@ public class LinkedInController {
         this.candidateService = candidateService;
     }
 
-    /* @GetMapping("/")
-    public String index() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-        System.out.println(userId);
-        return "Welcome " + userId;
-
-    }*/
-
-
-    //get client id and client Secret by creating a app in
-    //https://www.linkedin.com developers
-    //and set your redirect url
-
     //create button on your page and hit this get request
     @GetMapping("/authorization")
     public RedirectView authorization() {
@@ -138,6 +124,7 @@ public class LinkedInController {
         Authentication auth = new UsernamePasswordAuthenticationToken(email, null
                 ,new ArrayList<GrantedAuthority>());
 
+        //get name, photo, email from linkedin
         SecurityContextHolder.getContext().setAuthentication(auth);
         SecurityContext sc = SecurityContextHolder.getContext();
         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
@@ -150,21 +137,14 @@ public class LinkedInController {
         }
         httpSession.setAttribute("isCandidate", true);
 
-
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-
         model.addAttribute("userName", email);
 
+        //check if candidate already exits
         if( candidateService.findByEmail(email) == null ){
-            Candidate candidate = new Candidate();
-            System.out.println("No candidate found with this email.");
             redirectView.setUrl("/candidate/newCandidateForm");
 
             return redirectView;
         }else{
-            System.out.println("A candidate found with this email.");
             redirectView.setUrl("/");
         }
 

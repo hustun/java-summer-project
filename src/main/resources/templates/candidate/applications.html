@@ -57,10 +57,10 @@
                     <div class="job-container col-md-6">
                         <div class="left-side">
                             <h4 ><a th:href="@{'/jobs/show/' +  ${app.getJob().getId()}}" th:text=" ${app.getJob().title}"></a></h4>
-                            <p th:text="${app.getJob().description}"></p>
                             <!--<p th:text="'Status: ' + ${job.status}"></p>-->
                             <p th:text="'Company: ' + ${app.getJob().companyName}"></p>
                             <p th:text="'Location: ' + ${app.getJob().location}"></p>
+                            <p th:text="'Date: ' + ${app.getDate().toLocalDate()}"></p>
                         </div>
                         <div class="right-side">
                             <p th:text="'Status: ' + ${app.status}">Status: status</p>

@@ -3,6 +3,7 @@ package com.example.summerprojecttest.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -14,7 +15,7 @@ public class Application {
 
     @Column(name = "date")
     @NotNull
-    private LocalTime date;
+    private LocalDateTime date;
 
     @Column(name = "status")
     @NotNull
@@ -32,12 +33,12 @@ public class Application {
     public Application() {
     }
 
-    public Application(@NotNull LocalTime date) {
+    public Application(@NotNull LocalDateTime date) {
         this.date = date;
         this.status = StatusType.PENDING;
     }
 
-    public Application(@NotNull LocalTime date, StatusType status) {
+    public Application(@NotNull LocalDateTime date, StatusType status) {
         this.date = date;
         this.status = status;
     }
@@ -51,11 +52,11 @@ public class Application {
         this.id = id;
     }
 
-    public LocalTime getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalTime date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

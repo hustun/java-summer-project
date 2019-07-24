@@ -47,7 +47,7 @@ public class Job {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime closingTime;
 
-    @Column(name = "creationType")
+    @Column(name = "creationTime")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationTime;
 

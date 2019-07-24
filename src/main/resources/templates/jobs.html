@@ -84,7 +84,7 @@
                             <p th:if="${job.durationType == 1}" th:text="'Active for: ' + ${job.duration} + ' hours'"></p>
                             <p th:if="${job.durationType == 2}" th:text="'Active for: ' + ${job.duration} + ' days'"></p>
 
-                            <p th:if="${candidate != null && sort == 2}" th:text="${percents.get(iter.index) + ' percent skill match!'}">Percent: percent</p>
+                            <p th:if="${candidate != null && sort == 2}" th:text="${percents.get(iter.index) + '% skill match!'}">Percent: percent</p>
                             <a th:if="${session.isHR == true}" href="#" th:href="@{/jobs/updateJob(jobId=${job.id})}" class="btn btn-info btn-sm">Update</a>
                             <button type="button" class="btn btn-info btn-sm" data-toggle="collapse" th:attr="data-target='#demo' + ${job.id}" data-target="#demo">Show Required Skills</button>
                             <div th:id="${'demo' + job.id}" id="demo" class="collapse">
@@ -168,6 +168,9 @@
                 <h4 class="text-center">Manage Jobs</h4>
                 <hr>
                 <a th:href="@{/jobs/newJobForm}" class="btn btn-info btn-lg btn-block">Add Job</a>
+            </div>
+            <div th:if="${session.isCandidate == true && isBlacklisted == true}" class="col-lg-3">
+                <p th:text="'You are blacklisted for the following reason: ' + ${reason} " class="text-center text-danger h5">You are blacklisted for the following reason Jobs</p>
             </div>
         </div>
     </div>
