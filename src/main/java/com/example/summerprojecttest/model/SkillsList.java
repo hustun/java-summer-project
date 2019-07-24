@@ -20,6 +20,12 @@ public class SkillsList {
             skillsList.add(new Skill("Python"));
             skillsList.add(new Skill("Microsoft Office"));
             skillsList.add(new Skill("Matlab"));
+            skillsList.add(new Skill("Swift"));
+            skillsList.add(new Skill("Android"));
+            skillsList.add(new Skill("Spring"));
+            skillsList.add(new Skill("Teamwork"));
+            skillsList.add(new Skill("Communication"));
+            skillsList.add(new Skill("Leadership"));
 
         }
         return skillsList;

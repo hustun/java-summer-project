@@ -79,7 +79,7 @@
                         <p th:text="${candidate.address}"></p>
                     </div>
                     <div style="text-align: right">
-                        <button th:if="${session.isHR}" type="button" class="btn btn-info btn-sm" data-toggle="collapse" th:attr="data-target='#demo' + ${candidate.id}" data-target="#demo">Show Required Skills</button>
+                        <button th:if="${session.isHR}" type="button" class="btn btn-info btn-sm" data-toggle="collapse" th:attr="data-target='#demo' + ${candidate.id}" data-target="#demo">Blacklist</button>
                     </div>
 
 
@@ -92,4 +92,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
+<footer>
+    <div class="footer">
+        <i class="social-icon fab fa-facebook-f"></i>
+        <i class="social-icon fab fa-twitter"></i>
+        <i class="social-icon fab fa-instagram"></i>
+        <i class="social-icon fas fa-envelope"></i>
+        <p>Designed and Created by Hasan Üstün</p>
+    </div>
+</footer>
 </html>

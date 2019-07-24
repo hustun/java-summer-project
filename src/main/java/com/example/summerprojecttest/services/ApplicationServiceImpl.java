@@ -1,6 +1,9 @@
 package com.example.summerprojecttest.services;
 
 import com.example.summerprojecttest.model.Application;
+import com.example.summerprojecttest.model.Candidate;
+import com.example.summerprojecttest.model.Job;
+import com.example.summerprojecttest.model.StatusType;
 import com.example.summerprojecttest.repo.ApplicationRepository;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +51,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void deleteById(Integer id) {
         applicationRepository.deleteById(id);
+    }
+
+    @Override
+    public Set<Application> findByStatus(StatusType status) {
+        return applicationRepository.findByStatus(status);
+    }
+
+    @Override
+    public Set<Application> findByStatusAndApplicant(StatusType statusType, Candidate candidate) {
+        return applicationRepository.findByStatusAndApplicant(statusType, candidate);
+    }
+
+    @Override
+    public Set<Application> findByStatusAndJob(StatusType statusType, Job job) {
+        return applicationRepository.findByStatusAndJob(statusType, job);
     }
 }

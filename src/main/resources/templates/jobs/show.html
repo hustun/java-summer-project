@@ -84,14 +84,18 @@
 
                         Cras congue sed ligula in accumsan. Pellentesque nec laoreet turpis. Sed eu gravida odio, ac aliquet dolor. Cras ullamcorper convallis ipsum, eu tempus velit suscipit sit amet. Ut sit amet nibh quis massa luctus sagittis. Fusce sit amet mi dictum, mollis eros nec, dapibus orci. Nunc ac metus augue. Sed posuere non massa sit amet euismod. Aliquam ac ex eros. Phasellus in ornare nulla, sed laoreet sem. Aenean feugiat tellus in vehicula congue.
                     </div>
+
+                    <div class="mt-4 ml-4">
+                        <p th:if="${job.durationType == 0}" th:text="'Active for: ' + ${job.duration} + ' minutes'"></p>
+                        <p th:if="${job.durationType == 1}" th:text="'Active for: ' + ${job.duration} + ' hours'"></p>
+                        <p th:if="${job.durationType == 2}" th:text="'Active for: ' + ${job.duration} + ' days'"></p>
+                    </div>
                 </div>
 
-                <p th:if="${job.durationType == 0}" th:text="'Active for: ' + ${job.duration} + ' minutes'"></p>
-                <p th:if="${job.durationType == 1}" th:text="'Active for: ' + ${job.duration} + ' hours'"></p>
-                <p th:if="${job.durationType == 2}" th:text="'Active for: ' + ${job.duration} + ' days'"></p>
+
 
                 <h4 class="ml-4 mb-2">Required Skills</h4>
-                <div>
+                <div class="ml-4">
                     <ul>
                         <th:block th:object="${skills}" th:each="skill : ${skills}">
                             <div class="mb-2">
@@ -104,7 +108,7 @@
 
                         </th:block>
                     </ul>
-                    <p th:if="${candidate != null}" th:text="${skillMatchCount} + '/' + ${skillCount}">Test</p>
+                    <p th:if="${candidate != null}" th:text="'You match ' + ${skillMatchCount} + ' out of ' + ${skillCount} + ' required for this job.'">Test</p>
                 </div>
 
             </div>
@@ -113,6 +117,7 @@
                 <span th:if="${candidate == null or candidate.isApplied(job) == true}" tabindex="0" data-toggle="tooltip" title="Already applied or not logged in">
                     <button class="btn btn-info btn-lg btn-block application-button" disabled>Apply</button>
                 </span>
+                <a th:if="${session.isHR != null}" href="#" th:href="@{'/jobs/applications/' + ${job.id}}" class="btn btn-info btn-lg btn-block application-button mt-2">See All Applications</a>
                 <h2 class="mt-2 mb-2">Applicants</h2>
                 <th:block th:if="${session.isHR != null}" th:each="app : ${applications}">
                     <div class="job-container col-12 p-4">
@@ -154,4 +159,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
+<footer>
+    <div class="footer">
+        <i class="social-icon fab fa-facebook-f"></i>
+        <i class="social-icon fab fa-twitter"></i>
+        <i class="social-icon fab fa-instagram"></i>
+        <i class="social-icon fas fa-envelope"></i>
+        <p>Designed and Created by Hasan Üstün</p>
+    </div>
+</footer>
 </html>

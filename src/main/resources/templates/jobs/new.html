@@ -61,7 +61,17 @@
                         <h4 class="m-2 mb-4">Skills</h4>
                         <ul>
                             <li th:each="skill : ${skills}">
-                                <div class="form-check mb-4">
+                                <div class="form-check mb-4 col-6">
+
+                                    <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:if="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}" checked>
+                                    <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:unless="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}">
+
+
+                                    <label class="form-check-label ml-4" th:text="${skill.skillName}">
+                                        TEST
+                                    </label>
+                                </div>
+                                <div class="form-check mb-4 col-6">
 
                                     <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:if="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}" checked>
                                     <input name="jobSkill" class="form-check-input largerCheckbox" type="checkbox" th:value="${skill.skillName}" th:unless="${T(com.example.summerprojecttest.model.SkillsList).contains(job.getSkills(), skill)}">

@@ -1,10 +1,7 @@
 package com.example.summerprojecttest.controller;
 
 import com.example.summerprojecttest.model.*;
-import com.example.summerprojecttest.services.BlacklistEntryService;
-import com.example.summerprojecttest.services.CandidateService;
-import com.example.summerprojecttest.services.LanguageService;
-import com.example.summerprojecttest.services.SkillService;
+import com.example.summerprojecttest.services.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,15 +23,18 @@ public class CandidateController {
     private SkillService skillService;
     private LanguageService languageService;
     private BlacklistEntryService blacklistEntryService;
+    private ApplicationService applicationService;
     private ArrayList<Skill> skills = new ArrayList<>();
 
 
     public CandidateController(CandidateService candidateService, SkillService skillService,
-                               BlacklistEntryService blacklistEntryService, LanguageService languageService) {
+                               BlacklistEntryService blacklistEntryService, LanguageService languageService,
+                               ApplicationService applicationService) {
         this.candidateService = candidateService;
         this.skillService = skillService;
         this.blacklistEntryService = blacklistEntryService;
         this.languageService = languageService;
+        this.applicationService = applicationService;
         this.skills = SkillsList.getSkillsList();
     }
 
@@ -113,11 +113,39 @@ public class CandidateController {
     }
 
     @RequestMapping("/candidate/applications/{id}")
-    public String showCandidateApplications(@PathVariable String id, Model model){
+    public String showCandidateApplications(@PathVariable String id, @RequestParam(required = false, value = "filter") String filter, Model model){
         Candidate candidate = candidateService.findById(Integer.valueOf(id));
         model.addAttribute("candidate", candidate);
-        model.addAttribute("applications", candidate.getApplications());
         model.addAttribute("candidateObject", getCandidate());
+
+        if (filter == null){
+            filter = "all";
+        }
+
+        switch (filter){
+            case "all":
+                model.addAttribute("applications", candidate.getApplications());
+                model.addAttribute("filter", 0);
+                break;
+            case "accepted":
+                model.addAttribute("applications", applicationService.findByStatusAndApplicant(StatusType.ACCEPTED, candidate));
+                model.addAttribute("filter", 1);
+                break;
+            case "rejected":
+                model.addAttribute("applications", applicationService.findByStatusAndApplicant(StatusType.REJECTED, candidate));
+                model.addAttribute("filter", 2);
+                break;
+            case "inProcess":
+                model.addAttribute("applications", applicationService.findByStatusAndApplicant(StatusType.IN_PROCESS, candidate));
+                model.addAttribute("filter", 3);
+                break;
+            case "pending":
+                model.addAttribute("applications", applicationService.findByStatusAndApplicant(StatusType.PENDING, candidate));
+                model.addAttribute("filter", 4);
+                break;
+        }
+
+
 
 
         //ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

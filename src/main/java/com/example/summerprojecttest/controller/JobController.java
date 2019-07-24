@@ -95,9 +95,10 @@ public class JobController {
                                 skillMatchCount++;
                             }
                         }
-                        percents.add(skillMatchCount/job.getSkills().size());
+                        percents.add( Math.floor( (skillMatchCount/(job.getSkills().size())) *100) / 100);
 
                     }
+
                     model.addAttribute("percents", percents);
 
                     model.addAttribute("jobs", sortedMap.keySet());
@@ -270,6 +271,41 @@ public class JobController {
         }
 
         return "redirect:/jobs";
+    }
+
+    @RequestMapping("/jobs/applications/{id}")
+    public String showJobApplications(@PathVariable String id, @RequestParam(required = false, value = "filter") String filter, Model model) {
+        Job job = jobService.findById(Integer.valueOf(id));
+        model.addAttribute("job", job);
+        model.addAttribute("candidateObject", getCandidate());
+
+        if (filter == null) {
+            filter = "all";
+        }
+
+        switch (filter) {
+            case "all":
+                model.addAttribute("applications", job.getApplications());
+                model.addAttribute("filter", 0);
+                break;
+            case "accepted":
+                model.addAttribute("applications", applicationService.findByStatusAndJob(StatusType.ACCEPTED, job));
+                model.addAttribute("filter", 1);
+                break;
+            case "rejected":
+                model.addAttribute("applications", applicationService.findByStatusAndJob(StatusType.REJECTED, job));
+                model.addAttribute("filter", 2);
+                break;
+            case "inProcess":
+                model.addAttribute("applications", applicationService.findByStatusAndJob(StatusType.IN_PROCESS, job));
+                model.addAttribute("filter", 3);
+                break;
+            case "pending":
+                model.addAttribute("applications", applicationService.findByStatusAndJob(StatusType.PENDING, job));
+                model.addAttribute("filter", 4);
+                break;
+        }
+        return "jobs/applications";
     }
 
     private Candidate getCandidate(){

@@ -49,33 +49,58 @@
     </nav>
 
     <div th:if="${candidate.email == #authentication.name || session.isHR != null}" class="container-fluid ml-4">
-        <h3 class="mb-2">Applications</h3>
+        <h3 class="mb-2 text-center">Applications</h3>
         <hr>
-        <th:block th:each="app : ${applications}">
-            <div class="job-container col-md-6">
-                <div class="left-side">
-                    <h4 ><a th:href="@{'/jobs/show/' +  ${app.getJob().getId()}}" th:text=" ${app.getJob().title}"></a></h4>
-                    <p th:text="${app.getJob().description}"></p>
-                    <!--<p th:text="'Status: ' + ${job.status}"></p>-->
-                    <p th:text="'Company: ' + ${app.getJob().companyName}"></p>
-                    <p th:text="'Location: ' + ${app.getJob().location}"></p>
-                </div>
-                <div class="right-side">
-                    <p th:text="'Status: ' + ${app.status}">Status: status</p>
-                    <div class="dropleft show">
-                        <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Manage
-                        </a>
+        <div class="row">
+            <div class="col-8">
+                <th:block th:each="app : ${applications}">
+                    <div class="job-container col-md-6">
+                        <div class="left-side">
+                            <h4 ><a th:href="@{'/jobs/show/' +  ${app.getJob().getId()}}" th:text=" ${app.getJob().title}"></a></h4>
+                            <p th:text="${app.getJob().description}"></p>
+                            <!--<p th:text="'Status: ' + ${job.status}"></p>-->
+                            <p th:text="'Company: ' + ${app.getJob().companyName}"></p>
+                            <p th:text="'Location: ' + ${app.getJob().location}"></p>
+                        </div>
+                        <div class="right-side">
+                            <p th:text="'Status: ' + ${app.status}">Status: status</p>
+                            <div th:if="${session.isHR != null}" class="dropleft show">
+                                <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage
+                                </a>
 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/accept'}">Accept</a>
-                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/inProcess'}">In process</a>
-                            <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/reject'}">Reject</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/accept'}">Accept</a>
+                                    <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/inProcess'}">In process</a>
+                                    <a class="dropdown-item" href="#" th:href="@{'/hr/' + ${app.id} + '/reject'}">Reject</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </th:block>
+            </div>
+            <div class="col-3 mr-4">
+                <h4 class="text-center">Filter By</h4>
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a th:if="${filter == 0}" class="list-group-item list-group-item-action active" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=all'}" role="tab">All</a>
+                    <a th:unless="${filter == 0}" class="list-group-item list-group-item-action" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=all'}" role="tab">All</a>
+
+                    <a th:if="${filter == 1}" class="list-group-item list-group-item-action active" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=accepted'}" role="tab">Accepted</a>
+                    <a th:unless="${filter == 1}" class="list-group-item list-group-item-action" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=accepted'}" role="tab">Accepted</a>
+
+                    <a th:if="${filter != 2}"  class="list-group-item list-group-item-action" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=rejected'}" role="tab">Rejected</a>
+                    <a th:if="${filter == 2}"  class="list-group-item list-group-item-action active" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=rejected'}" role="tab">Rejected</a>
+
+                    <a th:if="${filter == 3}" class="list-group-item list-group-item-action active" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=inProcess'}" role="tab">In Process</a>
+                    <a th:unless="${filter == 3}" class="list-group-item list-group-item-action" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=inProcess'}" role="tab">In Process</a>
+
+                    <a th:if="${filter == 4}" class="list-group-item list-group-item-action active" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=pending'}" role="tab">Pending</a>
+                    <a th:unless="${filter == 4}" class="list-group-item list-group-item-action" href="#" th:href="@{'/candidate/applications/' + ${candidate.id} + '?filter=pending'}" role="tab">Pending</a>
+
                 </div>
             </div>
-        </th:block>
+        </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -83,4 +108,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </body>
+<footer>
+    <div class="footer">
+        <i class="social-icon fab fa-facebook-f"></i>
+        <i class="social-icon fab fa-twitter"></i>
+        <i class="social-icon fab fa-instagram"></i>
+        <i class="social-icon fas fa-envelope"></i>
+        <p>Designed and Created by Hasan Üstün</p>
+    </div>
+</footer>
 </html>

@@ -144,6 +144,7 @@ public class LinkedInController {
         httpSession.setAttribute("firstName", firstName);
         httpSession.setAttribute("lastName", lastName);
         httpSession.setAttribute("photo", photo);
+        
         if (httpSession.getAttribute("isHR") != null && (boolean) httpSession.getAttribute("isHR")){
             httpSession.removeAttribute("isHR");
         }
