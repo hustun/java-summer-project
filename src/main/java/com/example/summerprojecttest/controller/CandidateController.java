@@ -181,6 +181,21 @@ public class CandidateController {
         return "redirect:/";
     }
 
+    @GetMapping("/candidate/updateCandidate")
+    public String updateCandidate(@RequestParam("candidateId") Integer id, Model model){
+        Candidate candidate = candidateService.findById(id);
+
+        Set<Skill> skillsList = candidate.getSkills();
+        Set<Language> languageList = candidate.getLanguages();
+
+
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("languages", LanguageList.getLanguageList());
+        model.addAttribute("skills", skills);
+
+        return "candidate/new";
+    }
+
     private Candidate getCandidate(){
         Candidate candidate = candidateService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return candidate;

@@ -94,6 +94,7 @@
                 </div>
             </div>
             <div class="col-6">
+                <a th:if="${candidate.email == #authentication.name}" href="#" th:href="@{/candidate/updateCandidate(candidateId=${candidate.id})}" class="btn btn-info btn-sm">Update Profile</a>
                 <div th:if="${session.isHR != null}" class="container-fluid">
                     <a class="btn btn-info" th:href="@{'/candidate/applications/' + ${candidate.id}}">See Aplications</a>
                 </div>
