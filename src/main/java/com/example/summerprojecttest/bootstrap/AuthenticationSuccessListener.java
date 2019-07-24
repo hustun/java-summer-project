@@ -38,16 +38,6 @@ public class AuthenticationSuccessListener  implements ApplicationListener<Inter
             URL url = new URL("https://www.linkedin.com/oauth/v2/authorization");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            /*
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put("param1", "val");
-
-            con.setDoOutput(true);
-            DataOutputStream out = new DataOutputStream(con.getOutputStream());
-            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
-            out.flush();
-            out.close();
-            */
 
             //con.setRequestProperty("Content-Type", "application/json");
 

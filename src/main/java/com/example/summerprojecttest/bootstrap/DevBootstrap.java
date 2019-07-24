@@ -90,15 +90,15 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
         System.out.println(Timestamp.valueOf(LocalDateTime.now()));
         Job job = new Job("Software Engineer", "This is a software engineering job posting.",
-                LocalDateTime.now().minusDays(5), LocalDateTime.now(), Job.Status.ACTIVE, "HasComp", "İstanbul");
+                LocalDateTime.now().minusDays(5), null, Job.Status.ACTIVE, "HasComp", "İstanbul");
         Job job2 = new Job("Software Architect", "This is a software architecture job posting.",
-                LocalDateTime.now().minusHours(6), LocalDateTime.now(), Job.Status.ACTIVE, "Company2", "İstanbul");
+                LocalDateTime.now().minusHours(6), null, Job.Status.ACTIVE, "Company2", "İstanbul");
         Job job3 = new Job("Web Developer", "This is a web development job posting.",
-                LocalDateTime.now().minusMinutes(7), LocalDateTime.now(), Job.Status.ACTIVE, "TComp", "Ankara");
+                LocalDateTime.now().minusMinutes(7), LocalDateTime.now().plusSeconds(30), Job.Status.ACTIVE, "TComp", "Ankara");
         Job job4 = new Job("Web Designer", "This is a web design job posting.",
-                LocalDateTime.now(), LocalDateTime.now(), Job.Status.ACTIVE, "CompanyNull", "Seoul");
+                LocalDateTime.now(), null, Job.Status.ACTIVE, "CompanyNull", "Seoul");
         Job job5 = new Job("Fullstack Developer", "This is a fullstack development job posting.",
-                LocalDateTime.now(), LocalDateTime.now(), Job.Status.ACTIVE, "MyCompany", "Los Angeles");
+                LocalDateTime.now(), null, Job.Status.ACTIVE, "MyCompany", "Los Angeles");
 
         job.getSkills().add(skills.get(new Random().nextInt(skills.size())));
         job.getSkills().add(skills.get(new Random().nextInt(skills.size())));

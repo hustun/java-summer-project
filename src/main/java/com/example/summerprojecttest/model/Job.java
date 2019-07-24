@@ -3,10 +3,7 @@ package com.example.summerprojecttest.model;
 import com.example.summerprojecttest.converter.LocalDateAttributeConverter;
 import com.example.summerprojecttest.converter.LocalDateTimeAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.TermVector;
+import org.hibernate.search.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -50,6 +47,10 @@ public class Job {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime closingTime;
 
+    @Column(name = "creationType")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime creationTime;
+
     public enum Status{
         ACTIVE,
         INACTIVE
@@ -75,6 +76,7 @@ public class Job {
     @Analyzer(definition = "customanalyzer")
     private String location;
 
+    @IndexedEmbedded
     @ManyToMany
     @JoinTable(
             name = "job_skills",
@@ -204,18 +206,29 @@ public class Job {
         this.durationType = durationType;
     }
 
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
     public void updateDuration() {
-        Long duration = Math.abs(Duration.between(LocalDateTime.now(), this.getActivationTime()).toMinutes());
-        this.setDurationType(0);
-        if (duration > 60){
-            duration = duration / 60;
-            this.setDurationType(1);
+        if(this.getActivationTime() != null){
+            Long duration = Math.abs(Duration.between(LocalDateTime.now(), this.getActivationTime()).toMinutes());
+            this.setDurationType(0);
+            if (duration > 60){
+                duration = duration / 60;
+                this.setDurationType(1);
+            }
+            if (duration > 24){
+                duration = duration /24;
+                this.setDurationType(2);
+            }
+            this.setDuration(duration);
         }
-        if (duration > 24){
-            duration = duration /24;
-            this.setDurationType(2);
-        }
-        this.setDuration(duration);
+
     }
 
     @Override

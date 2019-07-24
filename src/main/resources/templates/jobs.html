@@ -72,7 +72,7 @@
                         </div>
             </div>
             <div class="col-lg-6">
-                <div class="job-container container-fluid pb-4" th:each="job,iter : ${jobs}">
+                <div th:if="${job.status == job.status.ACTIVE}" class="job-container container-fluid pb-4" th:each="job,iter : ${jobs}">
                     <th:block th:if="${job.status == job.status.ACTIVE}">
                         <h2><a th:href="@{'/jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
                         <div class="left-side">

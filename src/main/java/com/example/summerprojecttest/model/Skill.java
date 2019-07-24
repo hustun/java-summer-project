@@ -1,5 +1,9 @@
 package com.example.summerprojecttest.model;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +16,7 @@ public class Skill{
 
     @Column(name = "skillName")
     @NotEmpty
+    @Field(termVector = TermVector.YES)
     private String skillName;
 
     private String skillDesc;

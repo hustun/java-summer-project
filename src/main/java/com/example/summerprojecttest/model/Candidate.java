@@ -97,6 +97,7 @@ public class Candidate {
     @OneToMany(mappedBy = "applicant")
     private Set<Application> applications = new HashSet<>();
 
+    @IndexedEmbedded
     @ManyToMany
     @JoinTable(
             name = "candidate_skills",

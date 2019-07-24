@@ -50,6 +50,26 @@ public class JobController {
     @RequestMapping("/jobs")
     public String showJobsPage(@RequestParam(required = false, value = "sortBy") String sortBy, Model model){
 
+        for (Job job : jobService.findAll()){
+            if(job.getStatus() == Job.Status.ACTIVE){
+                if( job.getClosingTime() != null && job.getClosingTime().isBefore(LocalDateTime.now())){
+                    job.setStatus(Job.Status.INACTIVE);
+                    job.setActivationTime(null);
+                    job.setClosingTime(null);
+                    jobService.save(job);
+                }
+            }
+            else if (job.getStatus() == Job.Status.INACTIVE){
+                if( job.getActivationTime() != null && job.getActivationTime().isBefore(LocalDateTime.now())){
+                    job.setStatus(Job.Status.ACTIVE);
+                    job.setActivationTime(null);
+                    job.setClosingTime(null);
+                    jobService.save(job);
+                }
+            }
+
+        }
+
         model.addAttribute("candidate", getCandidate());
 
         if(getCandidate() != null){
@@ -129,6 +149,9 @@ public class JobController {
             }
         }
 
+        if(job.getCreationTime() == null){
+            job.setCreationTime(LocalDateTime.now());
+        }
         jobService.save(job);
 
         return "redirect:/jobs";
@@ -315,7 +338,9 @@ public class JobController {
 
     private void setActiveDuration() {
         for (Job job : jobService.findAll()){
-            job.updateDuration();
+            if (job.getActivationTime() != null){
+                job.updateDuration();
+            }
         }
     }
 
@@ -333,11 +358,12 @@ public class JobController {
                     .overridesForField("lastName", "customanalyzer_query")
                     .overridesForField("bio", "customanalyzer_query")
                     .overridesForField("university", "customanalyzer_query")
+                    .overridesForField("skills.skillName", "customanalyzer_query")
                     .get();
 
             org.apache.lucene.search.Query query = queryBuilder
                     .simpleQueryString()
-                    .onFields("firstName", "lastName", "bio", "university")
+                    .onFields("firstName", "lastName", "bio", "university", "skills.skillName")
                     .matching(searchTerm)
                     .createQuery();
 
@@ -356,11 +382,12 @@ public class JobController {
                     .overridesForField("description", "customanalyzer_query")
                     .overridesForField("companyName", "customanalyzer_query")
                     .overridesForField("location", "customanalyzer_query")
+                    .overridesForField("skills.skillName", "customanalyzer_query")
                     .get();
 
             org.apache.lucene.search.Query query = queryBuilder
                     .simpleQueryString()
-                    .onFields("title", "description", "companyName", "location")
+                    .onFields("title", "description", "companyName", "location", "skills.skillName")
                     .matching(searchTerm)
                     .createQuery();
 
