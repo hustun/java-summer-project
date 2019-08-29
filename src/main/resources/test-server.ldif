@@ -64,6 +64,16 @@ sn: Ustun
 uid: hasbey
 userPassword: haspassword
 
+dn: uid=hasan,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Hasan Ustun
+sn: Ustun
+uid: hasan
+userPassword: hasan
+
 dn: uid=aleyna,ou=people,dc=springframework,dc=org
 objectclass: top
 objectclass: person

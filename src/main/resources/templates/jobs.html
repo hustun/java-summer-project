@@ -72,7 +72,7 @@
                         </div>
             </div>
             <div class="col-lg-6">
-                <div th:if="${job.status == job.status.ACTIVE}" class="job-container container-fluid pb-4" th:each="job,iter : ${jobs}">
+                <div class="job-container container-fluid pb-4" th:each="job,iter : ${jobs}">
                     <th:block th:if="${job.status == job.status.ACTIVE}">
                         <h2><a th:href="@{'/jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
                         <div class="left-side">
@@ -134,7 +134,7 @@
                         </div>
                     </th:block>
 
-                    <div class="deactivated-job" th:if="${session.isHR == true && job.status == job.status.INACTIVE}">
+                    <div class="deactivated-job" th:if="${session.isHR != null and job.status == job.status.INACTIVE}">
                         <h2><a th:href="@{'/jobs/show/' +  ${job.id}}" th:text=" ${job.title}"></a></h2>
                         <div class="left-side">
                             <p th:text="${job.description}"></p>

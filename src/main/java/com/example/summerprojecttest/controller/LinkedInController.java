@@ -50,7 +50,8 @@ public class LinkedInController {
     @GetMapping("/authorization")
     public RedirectView authorization() {
         RedirectView redirectView = new RedirectView();
-        String authorizationUri="https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id="+clientId+"&redirect_uri="+redirectUrl+"&state=leellee&scope=r_liteprofile%20r_emailaddress";
+        String authorizationUri="https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id="
+                +clientId+"&redirect_uri="+redirectUrl+"&state=leellee&scope=r_liteprofile%20r_emailaddress";
         redirectView.setUrl(authorizationUri);
         return redirectView;
     }

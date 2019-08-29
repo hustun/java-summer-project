@@ -55,7 +55,7 @@
         <div class="row">
             <div class="col-lg-6 offset-lg-3 job-container" th:each="candidate : ${candidates}">
                 <div class="left-side">
-                    <h2 ><a th:href="@{'candidate/show/' +  ${candidate.id}}" th:text=" ${candidate.firstName + ' ' + candidate.lastName}"></a></h2>
+                    <h2 ><a th:href="@{'/candidate/show/' +  ${candidate.id}}" th:text=" ${candidate.firstName + ' ' + candidate.lastName}"></a></h2>
                     <p th:text="${'Age: ' + candidate.age}"></p>
                     <p th:text="${'Applied: ' + candidate.getApplications().size() + ' jobs'}"></p>
 
